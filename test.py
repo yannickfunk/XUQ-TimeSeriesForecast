@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-torch.cuda.is_available()
+print(torch.cuda.is_available())
 
 # draw a sine curve and show the plot
 x = np.linspace(0, 10, 100)
