@@ -1,8 +1,12 @@
-import numpy as np
+import os
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 # draw a sine curve and show the plot
 x = np.linspace(0, 10, 100)
 y = np.sin(x)
 plt.plot(x, y)
 plt.show()
+
+print(os)
