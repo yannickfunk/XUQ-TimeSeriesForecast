@@ -1,13 +1,10 @@
-import matplotlib.pyplot as plt
-import numpy as np
-import torch
+from neuralforecast import NeuralForecast
+from neuralforecast.models import NBEATS
+from neuralforecast.utils import AirPassengersDF
 
-print(torch.cuda.is_available())
+nf = NeuralForecast(models=[NBEATS(input_size=24, h=12, max_steps=100)], freq="M")
 
-# draw a sine curve and show the plot
-x = np.linspace(0, 10, 100)
-y = np.sin(x)
-plt.plot(x, y)
-plt.show()
+nf.fit(df=AirPassengersDF)
+result = nf.predict()
 
-a: int = 2
+print(result)
