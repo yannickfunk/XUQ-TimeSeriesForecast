@@ -1,5 +1,3 @@
-import os
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -9,4 +7,4 @@ y = np.sin(x)
 plt.plot(x, y)
 plt.show()
 
-print(os)
+a: int = 2
