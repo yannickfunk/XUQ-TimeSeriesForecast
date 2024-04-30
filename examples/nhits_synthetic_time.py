@@ -52,7 +52,7 @@ nf = NeuralForecast(
     freq="D",
 )
 nf.fit(df=Y_train)
-predictions = nf.predict(df=Y_train)
+predictions = nf.predict()
 
 
 plt.plot(synthetic_timeseries.ds, synthetic_timeseries.y, label="Ground Truth")
