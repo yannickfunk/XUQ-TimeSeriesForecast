@@ -134,6 +134,10 @@ def main():
     attr = explainer.attribute(inputs).abs()
     print(attr.shape)
 
+    plt.plot(y_train.ds.iloc[-INPUT_SIZE:], y_train.y.iloc[-INPUT_SIZE:])
+    plt.plot(y_train.ds.iloc[-INPUT_SIZE:], attr.squeeze().numpy() * 1000)
+    plt.show()
+
 
 if __name__ == "__main__":
     main()
