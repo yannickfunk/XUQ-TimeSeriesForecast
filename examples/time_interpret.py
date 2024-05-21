@@ -53,7 +53,8 @@ def define_neural_forecast() -> NeuralForecast:
     models = [
         LSTM(
             input_size=INPUT_SIZE,
-            h=HORIZON,  # loss=MQLoss(level=LEVELS), max_steps=1000
+            h=HORIZON,  # loss=MQLoss(level=LEVELS),
+            max_steps=1000,
         )
     ]
     nf = NeuralForecast(
@@ -102,13 +103,17 @@ def plot_predictions(
 
 
 def forward_function(model: pl.LightningModule, inputs: torch.Tensor):
-    input_dict = {
-        "insample_y": inputs,
-        "futr_exog": torch.zeros(0),
-        "hist_exog": torch.zeros(0),
-        "stat_exog": torch.zeros(0),
+    inputs = inputs[0, :, 0]
+    masks = torch.ones_like(inputs)
+    inputs = torch.unsqueeze(torch.vstack([inputs, masks]), 0)
+    batch = {
+        "temporal": inputs,
+        "temporal_cols": pd.Index(["y", "available_mask"]),
+        "y_idx": 0,
     }
-    return model(input_dict)[0, -1]
+    batch_idx = 0
+    model_output = model.predict_step(batch, batch_idx)
+    return model_output[0, -1]
 
 
 def main():
@@ -126,16 +131,20 @@ def main():
     plot_predictions(nf, synthetic_timeseries, predictions)
     model = nf.models[0]
 
-    input_array = np.expand_dims(np.array(y_train.y)[-INPUT_SIZE:], axis=(0, -1))
-    inputs = torch.from_numpy(input_array).float()
+    inputs = torch.from_numpy(np.expand_dims(np.array(y_train.y), axis=(0, -1))).float()
+    raw_predictions = forward_function(model, inputs)
+
+    # plot raw predictions vs predictions
+    plt.plot(predictions.ds, predictions["LSTM"])
+    plt.plot(predictions.ds, raw_predictions.detach().numpy())
+    plt.show()
 
     explainer = TemporalIntegratedGradients(lambda x: forward_function(model, x))
 
     attr = explainer.attribute(inputs).abs()
-    print(attr.shape)
 
     plt.plot(y_train.ds.iloc[-INPUT_SIZE:], y_train.y.iloc[-INPUT_SIZE:])
-    plt.plot(y_train.ds.iloc[-INPUT_SIZE:], attr.squeeze().numpy() * 1000)
+    plt.plot(y_train.ds.iloc[-INPUT_SIZE:], attr.squeeze().numpy()[-INPUT_SIZE:] * 10)
     plt.show()
 
 
