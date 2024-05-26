@@ -6,18 +6,17 @@ import numpy as np
 import pandas as pd
 import torch
 from neuralforecast import NeuralForecast
+from neuralforecast.losses.pytorch import DistributionLoss
 from neuralforecast.models import LSTM
 from synthetictime.simple_time_series import SimpleTimeSeries
 from tint.attr import TemporalIntegratedGradients
 
-# from neuralforecast.losses.pytorch import MQLoss
-# from lightning.pytorch.utilities.model_summary import ModelSummary
 # First we set a random seed
 np.random.seed(7)
 
 
 HORIZON = 86
-LEVELS = [60, 99]
+LEVELS = [80, 90]
 INPUT_SIZE = 3 * HORIZON
 
 
@@ -53,8 +52,11 @@ def define_neural_forecast() -> NeuralForecast:
     models = [
         LSTM(
             input_size=INPUT_SIZE,
-            h=HORIZON,  # loss=MQLoss(level=LEVELS),
-            max_steps=1000,
+            h=HORIZON,
+            loss=DistributionLoss(
+                distribution="Normal", level=LEVELS, return_params=True
+            ),
+            max_steps=500,
         )
     ]
     nf = NeuralForecast(
@@ -64,7 +66,7 @@ def define_neural_forecast() -> NeuralForecast:
     return nf
 
 
-def plot_predictions(
+def plot_predictions_quantile(
     nf: NeuralForecast, synthetic_timeseries: pd.DataFrame, predictions: pd.DataFrame
 ):
     model = nf.models[0]
@@ -72,32 +74,57 @@ def plot_predictions(
     plt.plot(
         synthetic_timeseries.ds.iloc[-last:],
         synthetic_timeseries.y.iloc[-last:],
-        label="Ground Truth",
+        label="ground truth",
         alpha=0.5,
     )
     plt.plot(
         predictions.ds,
-        predictions[f"{model}"],
-        label="Predictions",
+        predictions[f"{model}-median"],
+        label="median prediction",
         color="green",
     )
-    # plt.plot(
-    #     predictions.ds.iloc[-last:],
-    #     predictions[f"{model}-median"].iloc[-last:],
-    #     label="Predictions",
-    #     color="green",
-    # )
-    #
-    # for i, level in enumerate(LEVELS):
-    #     plt.fill_between(
-    #         predictions.ds.iloc[-last:],
-    #         predictions[f"{model}-lo-{level}"].iloc[-last:],
-    #         predictions[f"{model}-hi-{level}"].iloc[-last:],
-    #         alpha=1 - (i + 1) * (1 / (len(LEVELS) + 1)),
-    #         color="orange",
-    #         label=f"Level {level}",
-    #     )
 
+    for i, level in enumerate(LEVELS):
+        plt.fill_between(
+            predictions.ds,
+            predictions[f"{model}-lo-{level}"],
+            predictions[f"{model}-hi-{level}"],
+            alpha=1 - (i + 1) * (1 / (len(LEVELS) + 1)),
+            color="orange",
+            label=f"{level}% prediction interval",
+        )
+    plt.title(f"Predictions with prediction intervals, model: {model}")
+    plt.legend(loc="upper left")
+    plt.show()
+
+
+def plot_predictions_parametric(
+    nf: NeuralForecast, synthetic_timeseries: pd.DataFrame, predictions: pd.DataFrame
+):
+    model = nf.models[0]
+    last = HORIZON * 3
+    plt.plot(
+        synthetic_timeseries.ds.iloc[-last:],
+        synthetic_timeseries.y.iloc[-last:],
+        label="ground truth",
+        alpha=0.5,
+    )
+    plt.plot(
+        predictions.ds,
+        predictions[f"{model}-loc"],
+        label="mean prediction",
+        color="green",
+    )
+    plt.fill_between(
+        predictions.ds,
+        np.subtract(predictions[f"{model}-loc"], predictions[f"{model}-scale"]),
+        np.add(predictions[f"{model}-loc"], predictions[f"{model}-scale"]),
+        alpha=0.2,
+        color="green",
+        label="standard deviation",
+    )
+
+    plt.title(f"Mean prediction and standard deviation, model: {model}")
     plt.legend(loc="upper left")
     plt.show()
 
@@ -113,7 +140,7 @@ def forward_function(model: pl.LightningModule, inputs: torch.Tensor):
     }
     batch_idx = 0
     model_output = model.predict_step(batch, batch_idx)
-    return model_output[0, -1]
+    return model_output[0, -1, :, -1]
 
 
 def main():
@@ -128,15 +155,17 @@ def main():
     nf.fit(df=y_train)
 
     predictions = nf.predict()
-    plot_predictions(nf, synthetic_timeseries, predictions)
-    model = nf.models[0]
+    plot_predictions_quantile(nf, synthetic_timeseries, predictions)
+    plot_predictions_parametric(nf, synthetic_timeseries, predictions)
 
+    model = nf.models[0]
     inputs = torch.from_numpy(np.expand_dims(np.array(y_train.y), axis=(0, -1))).float()
     raw_predictions = forward_function(model, inputs)
 
     # plot raw predictions vs predictions
-    plt.plot(predictions.ds, predictions["LSTM"])
+    plt.plot(predictions.ds, predictions["LSTM-scale"])
     plt.plot(predictions.ds, raw_predictions.detach().numpy())
+    plt.title("Check for matching predictions")
     plt.show()
 
     explainer = TemporalIntegratedGradients(lambda x: forward_function(model, x))
