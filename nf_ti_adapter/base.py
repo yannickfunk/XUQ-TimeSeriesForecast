@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import pandas as pd
+import torch
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
@@ -54,8 +55,33 @@ class NfTiAdapter:
             self.nf.dataset.temporal[:, self.nf.dataset.temporal_cols.get_loc("y")],
         )
 
+    def _forward_function(self, inputs: torch.Tensor, output_name: str):
+        raise NotImplementedError
+
+    def _sanity_check(self):
+        _, train_y = self._get_current_train_data()
+        # add batch dimension
+        train_y = torch.unsqueeze(train_y, 0)
+
+        # add feature dimension
+        train_y = torch.unsqueeze(train_y, -1)
+
+        for output_name in self.output_names:
+            predictions = self.nf.predict()[f"{self.model}{output_name}"]
+            raw_predictions = self._forward_function(train_y, output_name)
+            match = np.allclose(
+                predictions, raw_predictions.detach().numpy(), rtol=1e-1, atol=1e-1
+            )
+            if not match:
+                raise ValueError(
+                    f"Model predictions do not match for output {output_name}"
+                )
+
     def fit(self, ds: Union[List[str], np.ndarray], y: np.ndarray):
         self.nf.fit(df=self._create_nf_dataframe(ds, y))
+
+        # update model
+        self.model = self.nf.models[0]
 
     def predict(
         self,
