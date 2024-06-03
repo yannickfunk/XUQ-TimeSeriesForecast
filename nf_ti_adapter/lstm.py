@@ -39,7 +39,7 @@ class LstmNfTiAdapter(NfTiAdapter):
             raise ValueError("Model has to be trained before calling explain")
         self._sanity_check()
         if ds is None and y is None:
-            ds, y = self._get_current_train_data()
+            ds, y = self._get_current_inference_data()
         elif ds is not None and y is not None:
             pass
         else:
@@ -59,7 +59,10 @@ class LstmNfTiAdapter(NfTiAdapter):
             forward_callable = lambda x: self._forward_function(x, "-scale")[
                 target_idx : target_idx + 1
             ]
-            explanation_method = method_to_constructor[method](forward_callable)
+
+            explanation_method: TemporalIntegratedGradients = method_to_constructor[
+                method
+            ](forward_callable)
             attr = explanation_method.attribute(y, show_progress=True).abs()
             attributions.append(attr)
 

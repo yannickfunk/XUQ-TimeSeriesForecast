@@ -55,6 +55,14 @@ class NfTiAdapter:
             self.nf.dataset.temporal[:, self.nf.dataset.temporal_cols.get_loc("y")],
         )
 
+    def _get_current_inference_data(self):
+        train_ds, train_y = self._get_current_train_data()
+
+        return (
+            train_ds[-self.model.inference_input_size :],
+            train_y[-self.model.inference_input_size :],
+        )
+
     def _forward_function(self, inputs: torch.Tensor, output_name: str):
         raise NotImplementedError
 
@@ -68,6 +76,7 @@ class NfTiAdapter:
         for output_name in self.output_names:
             predictions = self.nf.predict()[f"{self.model}{output_name}"]
             raw_predictions = self._forward_function(train_y, output_name)
+
             # plt.plot(predictions, label="predictions")
             # plt.plot(raw_predictions.detach().numpy(), label="raw predictions")
             # plt.title(f"Model predictions for output {output_name}")
@@ -122,13 +131,12 @@ class NfTiAdapter:
         test_ds: Optional[Union[List[str], np.ndarray]],
         test_y: Optional[np.ndarray],
     ):
-        last = self.horizon
-        train_ds, train_y = self._get_current_train_data()
+        inference_ds, inference_y = self._get_current_inference_data()
 
         plt.plot(
-            train_ds[-last:],
-            train_y[-last:],
-            label="train data",
+            inference_ds,
+            inference_y,
+            label="input data",
         )
         if test_ds is not None and test_y is not None:
             plt.plot(test_ds, test_y, label="test data", color="red")
@@ -148,13 +156,12 @@ class NfTiAdapter:
         test_ds: Optional[Union[List[str], np.ndarray]],
         test_y: Optional[np.ndarray],
     ):
-        last = self.horizon
-        train_ds, train_y = self._get_current_train_data()
+        inference_ds, inference_y = self._get_current_inference_data()
 
         plt.plot(
-            train_ds[-last:],
-            train_y[-last:],
-            label="train data",
+            inference_ds,
+            inference_y,
+            label="input data",
         )
         if test_ds is not None and test_y is not None:
             plt.plot(test_ds, test_y, label="test data", color="red")
@@ -184,13 +191,12 @@ class NfTiAdapter:
         test_ds: Optional[Union[List[str], np.ndarray]],
         test_y: Optional[np.ndarray],
     ):
-        last = self.horizon
-        train_ds, train_y = self._get_current_train_data()
+        inference_ds, inference_y = self._get_current_inference_data()
 
         plt.plot(
-            train_ds[-last:],
-            train_y[-last:],
-            label="train data",
+            inference_ds,
+            inference_y,
+            label="input data",
         )
         if test_ds is not None and test_y is not None:
             plt.plot(test_ds, test_y, label="test data", color="red")

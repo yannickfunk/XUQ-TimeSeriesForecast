@@ -10,9 +10,9 @@ from nf_ti_adapter.lstm import LstmNfTiAdapter
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
-HORIZON = 86
+HORIZON = 64
 LEVELS = [80, 90]
-INPUT_SIZE = 3 * HORIZON
+INPUT_SIZE = 2 * HORIZON
 
 model = LSTM(
     input_size=INPUT_SIZE,
@@ -27,22 +27,32 @@ nf_ti_adapter = LstmNfTiAdapter(model, 1)
 ts = SimpleTimeSeries(
     size=1000,
     base_amplitude=2.0,
-    base_frequency=0.02,
-    base_noise_scale=1,
+    base_frequency=0.03,
+    base_noise_scale=0,
     base_noise_amplitude=0.5,
 )
+
 train_y = ts.synthetic_time_series[:-HORIZON]
 train_ds = np.arange(len(train_y))
+
+# add noise to all values > 1.5 in train_y
+train_y[train_y > 1] += np.random.normal(0, 1, len(train_y[train_y > 1]))
 
 test_y = ts.synthetic_time_series[-HORIZON:]
 test_ds = np.arange(len(train_y), len(train_y) + len(test_y))
 
 nf_ti_adapter.fit(train_ds, train_y)
 
-nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
+predictions = nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
 
-attributions = nf_ti_adapter.explain("TIG", [0])
+print(predictions)
+plt.plot(predictions.ds, predictions["LSTM-scale"])
+plt.show()
+
+target_idx = np.argmax(predictions["LSTM-scale"])
+
+attributions = nf_ti_adapter.explain("TIG", [target_idx])
 
 plt.plot(train_ds[-INPUT_SIZE:], train_y[-INPUT_SIZE:])
-plt.plot(train_ds[-INPUT_SIZE:], attributions[0].squeeze().numpy()[-INPUT_SIZE:] * 10)
+plt.plot(train_ds[-INPUT_SIZE:], attributions[0].squeeze().numpy()[-INPUT_SIZE:] * 1000)
 plt.show()
