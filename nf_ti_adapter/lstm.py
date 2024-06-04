@@ -3,6 +3,7 @@ from typing import List, Optional, Union
 import numpy as np
 import pandas as pd
 import torch
+from sklearn.preprocessing import MaxAbsScaler
 from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
 
 from nf_ti_adapter.base import Model, NfTiAdapter
@@ -32,11 +33,14 @@ class LstmNfTiAdapter(NfTiAdapter):
         self,
         method: str,
         target_indices: List[int],
+        output_name: str,
         ds: Optional[Union[List[str], np.ndarray]] = None,
         y: Optional[np.ndarray] = None,
-    ):
+    ) -> List[np.ndarray]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
+        if output_name not in self.output_names:
+            raise ValueError(f"output_name {output_name} not in {self.output_names}")
         self._sanity_check()
         if ds is None and y is None:
             ds, y = self._get_current_inference_data()
@@ -56,14 +60,16 @@ class LstmNfTiAdapter(NfTiAdapter):
         }
         attributions = []
         for target_idx in target_indices:
-            forward_callable = lambda x: self._forward_function(x, "-scale")[
+            forward_callable = lambda x: self._forward_function(x, output_name)[
                 target_idx : target_idx + 1
             ]
 
             explanation_method: TemporalIntegratedGradients = method_to_constructor[
                 method
             ](forward_callable)
-            attr = explanation_method.attribute(y, show_progress=True).abs()
+            attr = explanation_method.attribute(y, show_progress=True).abs()[0, ...]
+            attr = torch.nan_to_num(attr)
+            attr = MaxAbsScaler().fit_transform(attr).flatten()
             attributions.append(attr)
 
         return attributions

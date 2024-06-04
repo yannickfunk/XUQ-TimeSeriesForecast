@@ -45,14 +45,13 @@ nf_ti_adapter.fit(train_ds, train_y)
 
 predictions = nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
 
-print(predictions)
 plt.plot(predictions.ds, predictions["LSTM-scale"])
 plt.show()
 
-target_idx = np.argmax(predictions["LSTM-scale"])
+target_idx = np.argmax(predictions["LSTM-scale"])[0]
 
-attributions = nf_ti_adapter.explain("TIG", [target_idx])
+attributions = nf_ti_adapter.explain("TIG", [target_idx], "-loc")[0]
 
 plt.plot(train_ds[-INPUT_SIZE:], train_y[-INPUT_SIZE:])
-plt.plot(train_ds[-INPUT_SIZE:], attributions[0].squeeze().numpy()[-INPUT_SIZE:] * 1000)
+plt.plot(train_ds[-INPUT_SIZE:], attributions[-INPUT_SIZE:])
 plt.show()
