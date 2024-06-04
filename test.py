@@ -48,10 +48,12 @@ predictions = nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
 plt.plot(predictions.ds, predictions["LSTM-scale"])
 plt.show()
 
-target_idx = int(np.argmax(predictions["LSTM-scale"]))
+target_indices = np.argwhere(predictions["LSTM-scale"] > 1).flatten().tolist()
+attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-loc")
 
-attributions = nf_ti_adapter.explain("TIG", [target_idx], "-loc")[0]
+attributions = np.mean(attribution_list, axis=0)
 
 plt.plot(train_ds[-INPUT_SIZE:], train_y[-INPUT_SIZE:])
-plt.plot(train_ds[-INPUT_SIZE:], attributions[-INPUT_SIZE:])
+for i, attr in enumerate(attributions[-INPUT_SIZE:]):
+    plt.axvline(x=train_ds[-INPUT_SIZE + i], color="r", alpha=attr)
 plt.show()
