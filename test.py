@@ -48,7 +48,7 @@ predictions = nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
 plt.plot(predictions.ds, predictions["LSTM-scale"])
 plt.show()
 
-target_idx = np.argmax(predictions["LSTM-scale"])[0]
+target_idx = int(np.argmax(predictions["LSTM-scale"]))
 
 attributions = nf_ti_adapter.explain("TIG", [target_idx], "-loc")[0]
 
