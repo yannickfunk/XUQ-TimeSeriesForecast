@@ -45,10 +45,10 @@ nf_ti_adapter.fit(train_ds, train_y)
 
 predictions = nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
 
-plt.plot(predictions.ds, predictions["LSTM-scale"])
+plt.plot(predictions.ds, predictions[f"{model}-scale"])
 plt.show()
 
-target_indices = np.argwhere(predictions["LSTM-scale"] > 1).flatten().tolist()
+target_indices = np.argwhere(predictions[f"{model}-scale"] > 1).flatten().tolist()
 attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-loc")
 
 attributions = np.mean(attribution_list, axis=0)
