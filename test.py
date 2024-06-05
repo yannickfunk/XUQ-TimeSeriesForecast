@@ -55,5 +55,15 @@ attributions = np.mean(attribution_list, axis=0)
 
 plt.plot(train_ds[-INPUT_SIZE:], train_y[-INPUT_SIZE:])
 for i, attr in enumerate(attributions[-INPUT_SIZE:]):
-    plt.axvline(x=train_ds[-INPUT_SIZE + i], color="r", alpha=attr)
+    xmin = train_ds[-INPUT_SIZE + i]
+    xmax = train_ds[-INPUT_SIZE + i + 1]
+
+    if xmin > xmax:
+        continue
+    plt.axvspan(
+        xmin=xmin,
+        xmax=xmax,
+        color="r",
+        alpha=attr,
+    )
 plt.show()

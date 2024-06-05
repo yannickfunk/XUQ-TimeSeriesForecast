@@ -6,6 +6,8 @@ import torch
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
+from sklearn.preprocessing import MaxAbsScaler
+from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
 
 Model = TypeVar("Model", bound=BaseModel)
 
@@ -67,28 +69,29 @@ class NfTiAdapter:
         raise NotImplementedError
 
     def _sanity_check(self):
-        train_y = self._get_current_train_data()[1]
-
-        # add batch and feature dimension
-        train_y = torch.unsqueeze(train_y, 0)
-        train_y = torch.unsqueeze(train_y, -1)
-
-        for output_name in self.output_names:
-            predictions = self.nf.predict()[f"{self.model}{output_name}"]
-            raw_predictions = self._forward_function(train_y, output_name)
-
-            # plt.plot(predictions, label="predictions")
-            # plt.plot(raw_predictions.detach().numpy(), label="raw predictions")
-            # plt.title(f"Model predictions for output {output_name}")
-            # plt.legend()
-            # plt.show()
-            # match = np.allclose(
-            #     predictions, raw_predictions.detach().numpy(), rtol=1e-1, atol=1e-1
-            # )
-            # if not match:
-            #     raise ValueError(
-            #         f"Model predictions do not match for output {output_name}"
-            #     )
+        # train_y = self._get_current_train_data()[1]
+        #
+        # # add batch and feature dimension
+        # train_y = torch.unsqueeze(train_y, 0)
+        # train_y = torch.unsqueeze(train_y, -1)
+        #
+        # for output_name in self.output_names:
+        #     predictions = self.nf.predict()[f"{self.model}{output_name}"]
+        #     raw_predictions = self._forward_function(train_y, output_name)
+        #
+        #     plt.plot(predictions, label="predictions")
+        #     plt.plot(raw_predictions.detach().numpy(), label="raw predictions")
+        #     plt.title(f"Model predictions for output {output_name}")
+        #     plt.legend()
+        #     plt.show()
+        #     match = np.allclose(
+        #         predictions, raw_predictions.detach().numpy(), rtol=1e-1, atol=1e-1
+        #     )
+        #     if not match:
+        #         raise ValueError(
+        #             f"Model predictions do not match for output {output_name}"
+        #         )
+        pass
 
     def fit(self, ds: Union[List[str], np.ndarray], y: np.ndarray):
         self.nf.fit(df=self._create_nf_dataframe(ds, y))
@@ -223,3 +226,48 @@ class NfTiAdapter:
         plt.title(f"Mean prediction and standard deviation, model: {self.model}")
         plt.legend(loc="upper left")
         plt.show()
+
+    def explain(
+        self,
+        method: str,
+        target_indices: List[int],
+        output_name: str,
+        ds: Optional[Union[List[str], np.ndarray]] = None,
+        y: Optional[np.ndarray] = None,
+    ) -> List[np.ndarray]:
+        if not hasattr(self.nf, "ds"):
+            raise ValueError("Model has to be trained before calling explain")
+        if output_name not in self.output_names:
+            raise ValueError(f"output_name {output_name} not in {self.output_names}")
+        self._sanity_check()
+        if ds is None and y is None:
+            ds, y = self._get_current_inference_data()
+        elif ds is not None and y is not None:
+            pass
+        else:
+            raise ValueError("ds and y both have to be None, or both not None")
+
+        # add batch and feature dimension
+        y = y[-self.model.inference_input_size :]
+        y = torch.unsqueeze(y, 0)
+        y = torch.unsqueeze(y, -1)
+
+        method_to_constructor = {
+            "TIG": TemporalIntegratedGradients,
+            "AugOcc": AugmentedOcclusion,
+        }
+        attributions = []
+        for target_idx in target_indices:
+            forward_callable = lambda x: self._forward_function(x, output_name)[
+                target_idx : target_idx + 1
+            ]
+
+            explanation_method: TemporalIntegratedGradients = method_to_constructor[
+                method
+            ](forward_callable)
+            attr = explanation_method.attribute(y, show_progress=True).abs()[0, ...]
+            attr = torch.nan_to_num(attr)
+            attr = MaxAbsScaler().fit_transform(attr).flatten()
+            attributions.append(attr)
+
+        return attributions
