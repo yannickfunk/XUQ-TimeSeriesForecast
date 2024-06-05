@@ -1,12 +1,15 @@
 import os
+import random
 
 import numpy as np
 from matplotlib import pyplot as plt
 from neuralforecast.losses.pytorch import DistributionLoss
-from neuralforecast.models import LSTM
+from neuralforecast.models import LSTM, NHITS
+from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
 
 from nf_ti_adapter.lstm import LstmNfTiAdapter
+from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
@@ -20,12 +23,12 @@ model = LSTM(
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    max_steps=500,
+    max_steps=100,
 )
 
 nf_ti_adapter = LstmNfTiAdapter(model, 1)
 ts = SimpleTimeSeries(
-    size=1000,
+    size=500,
     base_amplitude=2.0,
     base_frequency=0.03,
     base_noise_scale=0,
@@ -35,8 +38,14 @@ ts = SimpleTimeSeries(
 train_y = ts.synthetic_time_series[:-HORIZON]
 train_ds = np.arange(len(train_y))
 
-# add noise to all values > 1.5 in train_y
-train_y[train_y > 1] += np.random.normal(0, 1, len(train_y[train_y > 1]))
+peaks, _ = find_peaks(train_y)
+peaks = random.choices(peaks, k=7)
+for peak in peaks:
+    sub_arr = train_y[peak - 10 : peak + 10]
+    sub_arr += np.random.normal(0, 1, len(sub_arr))
+
+plt.plot(train_ds, train_y)
+plt.show()
 
 test_y = ts.synthetic_time_series[-HORIZON:]
 test_ds = np.arange(len(train_y), len(train_y) + len(test_y))
@@ -48,7 +57,7 @@ predictions = nf_ti_adapter.predict_plot(test_ds=test_ds, test_y=test_y)
 plt.plot(predictions.ds, predictions[f"{model}-scale"])
 plt.show()
 
-target_indices = np.argwhere(predictions[f"{model}-scale"] > 1).flatten().tolist()
+target_indices = np.argwhere(predictions[f"{model}-scale"] > 0.8).flatten().tolist()
 attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-loc")
 
 attributions = np.mean(attribution_list, axis=0)

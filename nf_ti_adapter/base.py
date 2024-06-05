@@ -6,7 +6,7 @@ import torch
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
-from sklearn.preprocessing import MaxAbsScaler
+from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, StandardScaler
 from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
 
 Model = TypeVar("Model", bound=BaseModel)
@@ -26,6 +26,9 @@ class NfTiAdapter:
         self.output_names: List[str] = self.model.loss.output_names
         (self.point_output, self.levels, self.parametric_output) = (
             self._parse_output_names()
+        )
+        self.inference_input_size = getattr(
+            self.model, "inference_input_size", self.model.input_size
         )
 
     def _parse_output_names(self) -> Tuple[bool, List[int], bool]:
@@ -61,8 +64,8 @@ class NfTiAdapter:
         train_ds, train_y = self._get_current_train_data()
 
         return (
-            train_ds[-self.model.inference_input_size :],
-            train_y[-self.model.inference_input_size :],
+            train_ds[-self.inference_input_size :],
+            train_y[-self.inference_input_size :],
         )
 
     def _forward_function(self, inputs: torch.Tensor, output_name: str):
@@ -248,7 +251,7 @@ class NfTiAdapter:
             raise ValueError("ds and y both have to be None, or both not None")
 
         # add batch and feature dimension
-        y = y[-self.model.inference_input_size :]
+        y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
         y = torch.unsqueeze(y, -1)
 
@@ -265,9 +268,10 @@ class NfTiAdapter:
             explanation_method: TemporalIntegratedGradients = method_to_constructor[
                 method
             ](forward_callable)
-            attr = explanation_method.attribute(y, show_progress=True).abs()[0, ...]
+            attr = explanation_method.attribute(y, show_progress=True)[0, ...]
             attr = torch.nan_to_num(attr)
             attr = MaxAbsScaler().fit_transform(attr).flatten()
+            attr = attr.clip(min=0)
             attributions.append(attr)
 
         return attributions
