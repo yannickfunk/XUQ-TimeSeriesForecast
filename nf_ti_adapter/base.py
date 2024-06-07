@@ -96,8 +96,8 @@ class NfTiAdapter:
         #         )
         pass
 
-    def fit(self, ds: Union[List[str], np.ndarray], y: np.ndarray):
-        self.nf.fit(df=self._create_nf_dataframe(ds, y))
+    def fit(self, ds: Union[List[str], np.ndarray], y: np.ndarray, **kwargs):
+        self.nf.fit(df=self._create_nf_dataframe(ds, y), **kwargs)
 
         # update model
         self.model = self.nf.models[0]
@@ -123,34 +123,43 @@ class NfTiAdapter:
     ) -> pd.DataFrame:
         predictions = self.predict(ds, y)
 
+        if ds is None and y is None:
+            ds, y = self._get_current_inference_data()
+        elif ds is not None and y is not None:
+            pass
+        else:
+            raise ValueError("ds and y both have to be None, or both not None")
+
         if self.point_output:
-            self._plot_predictions_point(predictions, test_ds, test_y)
+            self._plot_predictions_point(ds, y, predictions, test_ds, test_y)
         if len(self.levels) > 0:
-            self._plot_predictions_quantile(predictions, test_ds, test_y)
+            self._plot_predictions_quantile(ds, y, predictions, test_ds, test_y)
         if self.parametric_output:
-            self._plot_predictions_parametric(predictions, test_ds, test_y)
+            self._plot_predictions_parametric(ds, y, predictions, test_ds, test_y)
         return predictions
 
     def _plot_predictions_point(
         self,
+        ds: Union[List[str], np.ndarray],
+        y: np.ndarray,
         predictions: pd.DataFrame,
         test_ds: Optional[Union[List[str], np.ndarray]],
         test_y: Optional[np.ndarray],
     ):
-        inference_ds, inference_y = self._get_current_inference_data()
-
-        plt.plot(
-            inference_ds,
-            inference_y,
-            label="input data",
-        )
         if test_ds is not None and test_y is not None:
-            plt.plot(test_ds, test_y, label="test data", color="red")
+            # get test_y where test_ds equals predictions.ds
+            test_y = test_y[np.isin(test_ds, predictions.ds)]
+            plt.plot(predictions.ds, test_y, label="test data", color="red")
         plt.plot(
             predictions.ds,
             predictions[f"{self.model}"],
             label="prediction",
             color="green",
+        )
+        plt.plot(
+            ds,
+            y,
+            label="input data",
         )
         plt.title(f"Predictions, model: {self.model}")
         plt.legend(loc="upper left")
@@ -158,19 +167,17 @@ class NfTiAdapter:
 
     def _plot_predictions_quantile(
         self,
+        ds: Union[List[str], np.ndarray],
+        y: np.ndarray,
         predictions: pd.DataFrame,
         test_ds: Optional[Union[List[str], np.ndarray]],
         test_y: Optional[np.ndarray],
     ):
-        inference_ds, inference_y = self._get_current_inference_data()
-
-        plt.plot(
-            inference_ds,
-            inference_y,
-            label="input data",
-        )
         if test_ds is not None and test_y is not None:
-            plt.plot(test_ds, test_y, label="test data", color="red")
+            # get test_y where test_ds equals predictions.ds
+            test_y = test_y[np.isin(test_ds, predictions.ds)]
+            plt.plot(predictions.ds, test_y, label="test data", color="red")
+
         plt.plot(
             predictions.ds,
             predictions[f"{self.model}-median"],
@@ -187,25 +194,27 @@ class NfTiAdapter:
                 color="orange",
                 label=f"{level}% prediction interval",
             )
+        plt.plot(
+            ds,
+            y,
+            label="input data",
+        )
         plt.title(f"Predictions with prediction intervals, model: {self.model}")
         plt.legend(loc="upper left")
         plt.show()
 
     def _plot_predictions_parametric(
         self,
+        ds: Union[List[str], np.ndarray],
+        y: np.ndarray,
         predictions: pd.DataFrame,
         test_ds: Optional[Union[List[str], np.ndarray]],
         test_y: Optional[np.ndarray],
     ):
-        inference_ds, inference_y = self._get_current_inference_data()
-
-        plt.plot(
-            inference_ds,
-            inference_y,
-            label="input data",
-        )
         if test_ds is not None and test_y is not None:
-            plt.plot(test_ds, test_y, label="test data", color="red")
+            # get test_y where test_ds equals predictions.ds
+            test_y = test_y[np.isin(test_ds, predictions.ds)]
+            plt.plot(predictions.ds, test_y, label="test data", color="red")
 
         plt.plot(
             predictions.ds,
@@ -224,6 +233,11 @@ class NfTiAdapter:
             alpha=0.2,
             color="green",
             label="standard deviation",
+        )
+        plt.plot(
+            ds,
+            y,
+            label="input data",
         )
 
         plt.title(f"Mean prediction and standard deviation, model: {self.model}")
@@ -271,7 +285,8 @@ class NfTiAdapter:
             attr = explanation_method.attribute(y, show_progress=True)[0, ...]
             attr = torch.nan_to_num(attr)
             attr = MaxAbsScaler().fit_transform(attr).flatten()
-            attr = attr.clip(min=0)
+            attr = np.abs(attr)
+            attr = attr.clip(min=0, max=1)
             attributions.append(attr)
 
         return attributions
