@@ -284,8 +284,7 @@ class NfTiAdapter:
             ](forward_callable)
             attr = explanation_method.attribute(y, show_progress=True)[0, ...]
             attr = torch.nan_to_num(attr)
-            attr = MaxAbsScaler().fit_transform(attr).flatten()
-            attr = np.abs(attr)
+            attr = np.abs(MaxAbsScaler().fit_transform(attr).flatten())
             attr = attr.clip(min=0, max=1)
             attributions.append(attr)
 

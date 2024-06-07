@@ -20,19 +20,19 @@ INPUT_SIZE = 2 * HORIZON
 TRAIN_SPLIT = 0.8
 VAL_SPLIT = 0.2
 
-model = LSTM(
+model = NHITS(
     input_size=INPUT_SIZE,
-    inference_input_size=INPUT_SIZE,
+    # inference_input_size=INPUT_SIZE,
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    max_steps=1399,
+    # max_steps=1399,
     random_seed=42,
     early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
 )
 
-nf_ti_adapter = LstmNfTiAdapter(model, 1)
+nf_ti_adapter = NhitsNfTiAdapter(model, 1)
 time_series = SimpleTimeSeries(
     size=1000,
     base_amplitude=2.0,
@@ -80,8 +80,8 @@ start_idx = random.randint(0, len(test_ds) - INPUT_SIZE)
 test_input_ds = test_ds[start_idx : start_idx + INPUT_SIZE]
 test_input_y = test_y[start_idx : start_idx + INPUT_SIZE]
 
-predictions = nf_ti_adapter.predict_plot(
-    ds=test_input_ds, y=test_input_y, test_ds=test_ds, test_y=test_y
+predictions = nf_ti_adapter.predict(
+    ds=test_input_ds, y=test_input_y  # , test_ds=test_ds, test_y=test_y
 )
 
 target_indices = list(range(len(predictions[f"{model}-loc"])))
@@ -98,6 +98,14 @@ for idx, attributions in enumerate(attribution_list):
         )
     plt.plot(test_input_ds, test_input_y)
     plt.plot(predictions.ds, predictions[f"{model}-loc"])
+    plt.fill_between(
+        predictions.ds,
+        np.subtract(predictions[f"{model}-loc"], predictions[f"{model}-scale"]),
+        np.add(predictions[f"{model}-loc"], predictions[f"{model}-scale"]),
+        alpha=0.2,
+        color="green",
+        label="standard deviation",
+    )
     plt.scatter(
         predictions.ds.iloc[target_idx],
         predictions[f"{model}-loc"].iloc[target_idx],
