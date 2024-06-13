@@ -14,7 +14,7 @@ from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
-HORIZON = 24
+HORIZON = 48
 LEVELS = [80, 90]
 INPUT_SIZE = 2 * HORIZON
 TRAIN_SPLIT = 0.8
@@ -26,8 +26,8 @@ model = NHITS(
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    # max_steps=1399,
-    random_seed=42,
+    max_steps=2000,
+    random_seed=40,
     early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
 )
@@ -36,7 +36,7 @@ nf_ti_adapter = NhitsNfTiAdapter(model, 1)
 time_series = SimpleTimeSeries(
     size=1000,
     base_amplitude=2.0,
-    base_frequency=0.03,
+    base_frequency=0.05,
     base_noise_scale=0,
     base_noise_amplitude=0.5,
 ).synthetic_time_series
@@ -44,19 +44,19 @@ time_series_ds = np.arange(len(time_series))
 
 peaks, _ = find_peaks(time_series)
 for peak in peaks:
-    # skip peak with a probability of 0.5
-    if random.random() < 0.5:
+    # skip peak with a probability
+    if random.random() < 0.8:
         continue
-    sub_arr = time_series[peak - 5 : peak + 5]
-    sub_arr += np.random.normal(0, 3, len(sub_arr))
+    sub_arr = time_series[peak - 3 : peak + 3]
+    sub_arr += np.random.normal(0, 2, len(sub_arr))
 
-negative_peaks, _ = find_peaks(-time_series)
-for peak in negative_peaks:
-    # skip peak with a probability of 0.8
-    if random.random() < 0.5:
-        continue
-    sub_arr = time_series[peak - 5 : peak + 5]
-    sub_arr += np.random.normal(0, 3, len(sub_arr))
+# negative_peaks, _ = find_peaks(-time_series)
+# for peak in negative_peaks:
+#     # skip negative peak with a probability of 0.8
+#     if random.random() < 0.8:
+#         continue
+#     sub_arr = time_series[peak - 3 : peak + 3]
+#     sub_arr += np.random.normal(0, 1, len(sub_arr))
 
 # train test split
 last_train_idx = int(len(time_series) * TRAIN_SPLIT)
@@ -84,8 +84,8 @@ predictions = nf_ti_adapter.predict(
     ds=test_input_ds, y=test_input_y  # , test_ds=test_ds, test_y=test_y
 )
 
-target_indices = list(range(len(predictions[f"{model}-loc"])))
-attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-loc")
+target_indices = list(range(len(predictions[f"{model}-scale"])))
+attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-scale")
 
 for idx, attributions in enumerate(attribution_list):
     target_idx = target_indices[idx]
@@ -115,4 +115,5 @@ for idx, attributions in enumerate(attribution_list):
     )
     plt.title("Attributions for predicted point")
     plt.legend()
+    plt.savefig(f"plots/attributions_{target_idx}.png")
     plt.show()
