@@ -20,9 +20,9 @@ INPUT_SIZE = 2 * HORIZON
 TRAIN_SPLIT = 0.8
 VAL_SPLIT = 0.2
 
-model = NHITS(
+model = LSTM(
     input_size=INPUT_SIZE,
-    # inference_input_size=INPUT_SIZE,
+    inference_input_size=INPUT_SIZE,
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
@@ -32,7 +32,7 @@ model = NHITS(
     logger=TensorBoardLogger("logs"),
 )
 
-nf_ti_adapter = NhitsNfTiAdapter(model, 1)
+nf_ti_adapter = LstmNfTiAdapter(model, 1)
 time_series = SimpleTimeSeries(
     size=1000,
     base_amplitude=2.0,
@@ -49,14 +49,6 @@ for peak in peaks:
         continue
     sub_arr = time_series[peak - 3 : peak + 3]
     sub_arr += np.random.normal(0, 2, len(sub_arr))
-
-# negative_peaks, _ = find_peaks(-time_series)
-# for peak in negative_peaks:
-#     # skip negative peak with a probability of 0.8
-#     if random.random() < 0.8:
-#         continue
-#     sub_arr = time_series[peak - 3 : peak + 3]
-#     sub_arr += np.random.normal(0, 1, len(sub_arr))
 
 # train test split
 last_train_idx = int(len(time_series) * TRAIN_SPLIT)
@@ -76,7 +68,8 @@ plt.show()
 nf_ti_adapter.fit(train_ds, train_y, val_size=int(VAL_SPLIT * len(train_y)))
 
 # pick random INPUT_SIZE window from test set
-start_idx = random.randint(0, len(test_ds) - INPUT_SIZE)
+# start_idx = random.randint(0, len(test_ds) - INPUT_SIZE)
+start_idx = 98
 test_input_ds = test_ds[start_idx : start_idx + INPUT_SIZE]
 test_input_y = test_y[start_idx : start_idx + INPUT_SIZE]
 
@@ -115,5 +108,5 @@ for idx, attributions in enumerate(attribution_list):
     )
     plt.title("Attributions for predicted point")
     plt.legend()
-    plt.savefig(f"plots/attributions_{target_idx}.png")
+    plt.savefig(f"results/attributions_{target_idx}.png")
     plt.show()
