@@ -5,12 +5,12 @@ import numpy as np
 from lightning.pytorch.loggers import TensorBoardLogger
 from matplotlib import pyplot as plt
 from neuralforecast.losses.pytorch import DistributionLoss
-from neuralforecast.models import LSTM
+from neuralforecast.models import NHITS
 from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
 
 from common.utils import plot_attributions
-from nf_ti_adapter.lstm import LstmNfTiAdapter
+from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
@@ -20,9 +20,8 @@ INPUT_SIZE = 2 * HORIZON
 TRAIN_SPLIT = 0.8
 VAL_SPLIT = 0.2
 
-model = LSTM(
+model = NHITS(
     input_size=INPUT_SIZE,
-    inference_input_size=INPUT_SIZE,
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
@@ -32,7 +31,7 @@ model = LSTM(
     logger=TensorBoardLogger("logs"),
 )
 
-nf_ti_adapter = LstmNfTiAdapter(model, 1)
+nf_ti_adapter = NhitsNfTiAdapter(model, 1)
 time_series = SimpleTimeSeries(
     size=1000,
     base_amplitude=2.0,
