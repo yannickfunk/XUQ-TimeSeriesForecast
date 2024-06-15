@@ -4,6 +4,7 @@ import numpy as np
 
 def plot_attributions(
     attribution_list,
+    negative_attribution_list,
     output_name,
     test_input_ds,
     test_input_y,
@@ -20,7 +21,14 @@ def plot_attributions(
                 alpha=attr,
                 linewidth=3,
             )
-        plt.plot(test_input_ds, test_input_y)
+        for i, attr in enumerate(negative_attribution_list[idx]):
+            plt.axvline(
+                x=float(test_input_ds[i]),
+                color="b",
+                alpha=attr,
+                linewidth=3,
+            )
+        plt.plot(test_input_ds, test_input_y, color="black")
         plt.plot(predictions.ds, predictions[f"{model}-loc"])
         plt.fill_between(
             predictions.ds,

@@ -251,7 +251,7 @@ class NfTiAdapter:
         output_name: str,
         ds: Optional[Union[List[str], np.ndarray]] = None,
         y: Optional[np.ndarray] = None,
-    ) -> List[np.ndarray]:
+    ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
@@ -274,6 +274,7 @@ class NfTiAdapter:
             "AugOcc": AugmentedOcclusion,
         }
         attributions = []
+        negative_attributions = []
         for target_idx in target_indices:
             forward_callable = lambda x: self._forward_function(x, output_name)[
                 target_idx : target_idx + 1
@@ -284,8 +285,16 @@ class NfTiAdapter:
             ](forward_callable)
             attr = explanation_method.attribute(y, show_progress=True)[0, ...]
             attr = torch.nan_to_num(attr)
-            attr = np.abs(MaxAbsScaler().fit_transform(attr).flatten())
+            attr = attr.detach().numpy()
+
+            negative_attr = np.abs(attr.clip(max=0))
+            negative_attr = MinMaxScaler().fit_transform(negative_attr).flatten()
+            negative_attr = negative_attr.clip(min=0, max=1)
+            negative_attributions.append(negative_attr)
+
+            attr = attr.clip(min=0)
+            attr = MaxAbsScaler().fit_transform(attr).flatten()
             attr = attr.clip(min=0, max=1)
             attributions.append(attr)
 
-        return attributions
+        return attributions, negative_attributions
