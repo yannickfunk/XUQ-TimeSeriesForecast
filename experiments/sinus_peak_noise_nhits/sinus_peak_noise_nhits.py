@@ -77,15 +77,33 @@ predictions = nf_ti_adapter.predict(
 )
 
 target_indices = list(range(len(predictions[f"{model}-loc"])))
-attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-loc")
+attribution_list, negative_attribution_list = nf_ti_adapter.explain(
+    "TIG", target_indices, "-loc"
+)
 
 plot_attributions(
-    attribution_list, "-loc", test_input_ds, test_input_y, predictions, model, "TIG"
+    attribution_list,
+    negative_attribution_list,
+    "-loc",
+    test_input_ds,
+    test_input_y,
+    predictions,
+    model,
+    "TIG",
 )
 
 target_indices = list(range(len(predictions[f"{model}-scale"])))
-attribution_list = nf_ti_adapter.explain("TIG", target_indices, "-scale")
+attribution_list, negative_attribution_list = nf_ti_adapter.explain(
+    "TIG", target_indices, "-scale"
+)
 
 plot_attributions(
-    attribution_list, "-scale", test_input_ds, test_input_y, predictions, model, "TIG"
+    attribution_list,
+    negative_attribution_list,
+    "-scale",
+    test_input_ds,
+    test_input_y,
+    predictions,
+    model,
+    "TIG",
 )
