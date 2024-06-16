@@ -26,7 +26,7 @@ model = LSTM(
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    max_steps=2000,
+    max_steps=900,
     random_seed=40,
     early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
