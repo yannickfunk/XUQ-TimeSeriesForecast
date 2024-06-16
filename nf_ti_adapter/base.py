@@ -6,7 +6,6 @@ import torch
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
-from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, StandardScaler
 from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
 
 Model = TypeVar("Model", bound=BaseModel)
@@ -285,16 +284,13 @@ class NfTiAdapter:
             ](forward_callable)
             attr = explanation_method.attribute(y, show_progress=True)[0, ...]
             attr = torch.nan_to_num(attr)
-            attr = attr.detach().numpy()
+            attr = attr.detach().numpy().squeeze()
+            max_attr = np.max(np.abs(attr))
 
-            negative_attr = np.abs(attr.clip(max=0))
-            negative_attr = MinMaxScaler().fit_transform(negative_attr).flatten()
-            negative_attr = negative_attr.clip(min=0, max=1)
+            negative_attr = np.abs(attr.clip(max=0)) / max_attr
             negative_attributions.append(negative_attr)
 
-            attr = attr.clip(min=0)
-            attr = MaxAbsScaler().fit_transform(attr).flatten()
-            attr = attr.clip(min=0, max=1)
-            attributions.append(attr)
+            positive_attr = np.abs(attr.clip(min=0)) / max_attr
+            attributions.append(positive_attr)
 
         return attributions, negative_attributions
