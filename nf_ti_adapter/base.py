@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import pandas as pd
+import tikzplotlib
 import torch
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
@@ -163,6 +164,7 @@ class NfTiAdapter:
         plt.title(f"Predictions, model: {self.model}")
         plt.legend(loc="upper left")
         plt.savefig(f"results/predictions_point.png")
+        tikzplotlib.save("results_tikz/predictions_point.tex")
         plt.show()
 
     def _plot_predictions_quantile(
@@ -202,6 +204,7 @@ class NfTiAdapter:
         plt.title(f"Predictions with prediction intervals, model: {self.model}")
         plt.legend(loc="upper left")
         plt.savefig(f"results/predictions_quantile.png")
+        tikzplotlib.save("results_tikz/predictions_quantile.tex")
         plt.show()
 
     def _plot_predictions_parametric(
@@ -244,6 +247,7 @@ class NfTiAdapter:
         plt.title(f"Mean prediction and standard deviation, model: {self.model}")
         plt.legend(loc="upper left")
         plt.savefig(f"results/predictions_parametric.png")
+        tikzplotlib.save("results_tikz/predictions_parametric.tex")
         plt.show()
 
     def explain(

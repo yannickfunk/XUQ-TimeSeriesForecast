@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import tikzplotlib
 
 
 def plot_attributions(
@@ -38,14 +39,18 @@ def plot_attributions(
             color="green",
             label="standard deviation",
         )
-        plt.scatter(
+        plt.plot(
             predictions.ds.iloc[target_idx],
             predictions[f"{model}-loc"].iloc[target_idx],
             color="green",
             label="predicted point",
+            linestyle=None,
             marker="x",
         )
         plt.title(f"{method} Attributions for {output_name}, predictions with {model}")
         plt.legend()
         plt.savefig(f"results/{output_name[1:]}_attributions_{target_idx}.png")
+        tikzplotlib.save(
+            f"results_tikz/{output_name[1:]}_attributions_{target_idx}.tex"
+        )
         plt.show()
