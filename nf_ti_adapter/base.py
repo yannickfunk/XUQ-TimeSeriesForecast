@@ -162,6 +162,7 @@ class NfTiAdapter:
         )
         plt.title(f"Predictions, model: {self.model}")
         plt.legend(loc="upper left")
+        plt.savefig(f"results/predictions_point.png")
         plt.show()
 
     def _plot_predictions_quantile(
@@ -200,6 +201,7 @@ class NfTiAdapter:
         )
         plt.title(f"Predictions with prediction intervals, model: {self.model}")
         plt.legend(loc="upper left")
+        plt.savefig(f"results/predictions_quantile.png")
         plt.show()
 
     def _plot_predictions_parametric(
@@ -241,6 +243,7 @@ class NfTiAdapter:
 
         plt.title(f"Mean prediction and standard deviation, model: {self.model}")
         plt.legend(loc="upper left")
+        plt.savefig(f"results/predictions_parametric.png")
         plt.show()
 
     def explain(
