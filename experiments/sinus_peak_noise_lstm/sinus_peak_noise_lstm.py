@@ -73,7 +73,7 @@ start_idx = 98
 test_input_ds = test_ds[start_idx : start_idx + INPUT_SIZE]
 test_input_y = test_y[start_idx : start_idx + INPUT_SIZE]
 
-predictions = nf_ti_adapter.predict(
+predictions = nf_ti_adapter.predict_plot(
     ds=test_input_ds, y=test_input_y  # , test_ds=test_ds, test_y=test_y
 )
 
