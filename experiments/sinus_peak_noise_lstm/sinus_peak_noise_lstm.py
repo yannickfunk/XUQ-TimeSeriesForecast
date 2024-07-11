@@ -47,7 +47,7 @@ for peak in peaks:
     # skip peak with a probability
     if random.random() < 0.8:
         continue
-    sub_arr = time_series[peak - 3 : peak + 3]
+    sub_arr = time_series[peak - 3 : peak + 4]
     sub_arr += np.random.normal(0, 2, len(sub_arr))
 
 # train test split
