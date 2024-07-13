@@ -2,6 +2,7 @@ import os
 import random
 
 import numpy as np
+import tikzplotlib
 from lightning.pytorch.loggers import TensorBoardLogger
 from matplotlib import pyplot as plt
 from neuralforecast.losses.pytorch import DistributionLoss
@@ -64,6 +65,11 @@ plt.axvline(x=last_train_idx, color="r", label="train / test split", linestyle="
 plt.legend()
 plt.title("Time Series")
 plt.show()
+
+# save sample
+plt.plot(time_series[:100])
+tikzplotlib.save("results_tikz/sample.tex")
+plt.close()
 
 nf_ti_adapter.fit(train_ds, train_y, val_size=int(VAL_SPLIT * len(train_y)))
 
