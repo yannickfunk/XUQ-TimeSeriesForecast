@@ -7,7 +7,10 @@ import torch
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
+from statsforecast import StatsForecast
 from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
+
+from common.timeseries import TimeSeries
 
 Model = TypeVar("Model", bound=BaseModel)
 
@@ -45,13 +48,24 @@ class NfTiAdapter:
         return point_output, sorted(levels), parametric_output
 
     @staticmethod
-    def _create_nf_dataframe(ds: Union[List[str], np.ndarray], y: np.ndarray):
+    def _create_nf_dataframe(
+        ds: Union[List[str], np.ndarray], y: np.ndarray, unique_id: Union[int, str] = 1
+    ):
         return pd.DataFrame(
             {
-                "unique_id": 1.0,
+                "unique_id": unique_id,
                 "ds": ds,
                 "y": y,
             }
+        )
+
+    @staticmethod
+    def _create_nf_dataframe_list(time_series_list: List[TimeSeries]):
+        return pd.concat(
+            [
+                NfTiAdapter._create_nf_dataframe(ts.ds, ts.y, unique_id=ts.unique_id)
+                for ts in time_series_list
+            ]
         )
 
     def _get_current_train_data(self):
@@ -102,6 +116,13 @@ class NfTiAdapter:
         # update model
         self.model = self.nf.models[0]
 
+    def fit_list(self, time_series_list: List[TimeSeries], **kwargs):
+        fit_df = self._create_nf_dataframe_list(time_series_list)
+        self.nf.fit(df=fit_df, **kwargs)
+
+        # update model
+        self.model = self.nf.models[0]
+
     def predict(
         self,
         ds: Optional[Union[List[str], np.ndarray]] = None,
@@ -113,6 +134,28 @@ class NfTiAdapter:
             return self.nf.predict(df=self._create_nf_dataframe(ds, y))
         else:
             raise ValueError("ds and y both have to be None, or both not None")
+
+    def predict_list(
+        self,
+        time_series_list: List[TimeSeries],
+    ) -> pd.DataFrame:
+        return self.nf.predict(df=self._create_nf_dataframe_list(time_series_list))
+
+    def predict_list_plot(
+        self,
+        time_series_list: List[TimeSeries],
+    ) -> pd.DataFrame:
+        test_input = self._create_nf_dataframe_list(time_series_list)
+        predictions = self.nf.predict(df=test_input)
+        fig = StatsForecast.plot(
+            test_input,
+            predictions,
+            level=self.levels,
+            models=[str(self.model)],
+        )
+        fig.show()
+
+        return predictions
 
     def predict_plot(
         self,
@@ -269,7 +312,69 @@ class NfTiAdapter:
             pass
         else:
             raise ValueError("ds and y both have to be None, or both not None")
+        # add batch and feature dimension
+        y = y[-self.inference_input_size :]
+        y = torch.unsqueeze(y, 0)
+        y = torch.unsqueeze(y, -1)
 
+        method_to_constructor = {
+            "TIG": TemporalIntegratedGradients,
+            "AugOcc": AugmentedOcclusion,
+        }
+        attributions = []
+        negative_attributions = []
+        for target_idx in target_indices:
+            forward_callable = lambda x: self._forward_function(x, output_name)[
+                target_idx : target_idx + 1
+            ]
+
+            explanation_method: TemporalIntegratedGradients = method_to_constructor[
+                method
+            ](forward_callable)
+            attr = explanation_method.attribute(y, show_progress=True)[0, ...]
+            attr = torch.nan_to_num(attr)
+            attr = attr.detach().numpy().squeeze()
+            max_attr = np.max(np.abs(attr))
+
+            negative_attr = np.abs(attr.clip(max=0)) / max_attr
+            negative_attributions.append(negative_attr)
+
+            positive_attr = np.abs(attr.clip(min=0)) / max_attr
+            attributions.append(positive_attr)
+
+        return attributions, negative_attributions
+
+    def explain_multi(
+        self,
+        method: str,
+        target_indices: List[int],
+        output_name: str,
+        ds: Optional[Union[List[str], np.ndarray]] = None,
+        y: Optional[np.ndarray] = None,
+    ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+        if not hasattr(self.nf, "ds"):
+            raise ValueError("Model has to be trained before calling explain")
+        if output_name not in self.output_names:
+            raise ValueError(f"output_name {output_name} not in {self.output_names}")
+        self._sanity_check()
+        if ds is None and y is None:
+            ds, y = self._get_current_inference_data()
+        elif ds is not None and y is not None:
+            pass
+        else:
+            raise ValueError("ds and y both have to be None, or both not None")
+        print(
+            self.nf.dataset.temporal[
+                :, self.nf.dataset.temporal_cols.get_loc("y")
+            ].shape
+        )
+        print(list(self.nf.uids))
+        print(self.nf.dataset.indptr)
+        plt.plot(
+            self.nf.dataset.temporal[:, self.nf.dataset.temporal_cols.get_loc("y")]
+        )
+        plt.show()
+        exit()
         # add batch and feature dimension
         y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)

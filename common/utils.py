@@ -1,6 +1,13 @@
+import random
+from typing import List, Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 import tikzplotlib
+from scipy.signal import find_peaks
+from synthetictime.simple_time_series import SimpleTimeSeries
+
+from common.timeseries import TimeSeries
 
 
 def plot_attributions(
@@ -54,3 +61,53 @@ def plot_attributions(
             f"results_tikz/{output_name[1:]}_attributions_{target_idx}.tex"
         )
         plt.show()
+
+
+def generate_sine_noisy_peaks(
+    size: int = 1000,
+    amplitude: float = 2.0,
+    frequency: float = 0.05,
+    noise_mean: float = 0,
+    noise_std: float = 2,
+    noise_width: int = 6,
+):
+    base = SimpleTimeSeries(
+        size=size,
+        base_amplitude=amplitude,
+        base_frequency=frequency,
+        base_noise_scale=0,
+        base_noise_amplitude=0,
+    ).synthetic_time_series
+
+    peaks, _ = find_peaks(base)
+    for peak in peaks:
+        # skip peak with a probability
+        if random.random() < 0.8:
+            continue
+        limit = noise_width // 2
+        sub_arr = base[peak - limit : peak + limit + 1]
+        sub_arr += np.random.normal(noise_mean, noise_std, len(sub_arr))
+    return base
+
+
+def train_test_split(
+    time_series_list: List[TimeSeries], train_split
+) -> Tuple[List[TimeSeries], List[TimeSeries]]:
+    last_train_idx = int(len(time_series_list[0].y) * train_split)
+    train = [
+        TimeSeries(
+            unique_id=ts.unique_id,
+            ds=ts.ds[:last_train_idx],
+            y=ts.y[:last_train_idx],
+        )
+        for ts in time_series_list
+    ]
+    test = [
+        TimeSeries(
+            unique_id=ts.unique_id,
+            ds=ts.ds[last_train_idx:],
+            y=ts.y[last_train_idx:],
+        )
+        for ts in time_series_list
+    ]
+    return train, test
