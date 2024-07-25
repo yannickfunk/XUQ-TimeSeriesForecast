@@ -69,38 +69,51 @@ class NfTiAdapter:
         )
 
     def _get_current_train_data(self):
-        return (
-            self.nf.ds,
-            self.nf.dataset.temporal[:, self.nf.dataset.temporal_cols.get_loc("y")],
-        )
+        temporal_data = self.nf.dataset.temporal[
+            :, self.nf.dataset.temporal_cols.get_loc("y")
+        ]
+        if len(self.nf.uids) == 1:
+            return self.nf.ds, temporal_data
+
+        temporal_stacked = torch.zeros((len(self.nf.uids), self.nf.dataset.indptr[1]))
+        for i in range(len(self.nf.uids)):
+            temporal_stacked[i] = temporal_data[
+                self.nf.dataset.indptr[i] : self.nf.dataset.indptr[i + 1]
+            ]
+        return self.nf.ds, temporal_stacked
 
     def _get_current_inference_data(self):
         train_ds, train_y = self._get_current_train_data()
 
+        train_ds = train_ds[-self.inference_input_size :]
+
+        if len(self.nf.uids) == 1:
+            train_y = train_y[:, -self.inference_input_size :]
+        else:
+            train_y = train_y[-self.inference_input_size :]
         return (
-            train_ds[-self.inference_input_size :],
-            train_y[-self.inference_input_size :],
+            train_ds,
+            train_y,
         )
 
     def _forward_function(self, inputs: torch.Tensor, output_name: str):
         raise NotImplementedError
 
     def _sanity_check(self):
-        # train_y = self._get_current_train_data()[1]
-        #
-        # # add batch and feature dimension
-        # train_y = torch.unsqueeze(train_y, 0)
-        # train_y = torch.unsqueeze(train_y, -1)
-        #
-        # for output_name in self.output_names:
-        #     predictions = self.nf.predict()[f"{self.model}{output_name}"]
-        #     raw_predictions = self._forward_function(train_y, output_name)
-        #
-        #     plt.plot(predictions, label="predictions")
-        #     plt.plot(raw_predictions.detach().numpy(), label="raw predictions")
-        #     plt.title(f"Model predictions for output {output_name}")
-        #     plt.legend()
-        #     plt.show()
+        train_y = self._get_current_train_data()[1]
+
+        # add batch and feature dimension
+        train_y = torch.unsqueeze(train_y, 0)
+        train_y = torch.unsqueeze(train_y, -1)
+
+        for output_name in self.output_names:
+            predictions = self.nf.predict()[f"{self.model}{output_name}"]
+            raw_predictions = self._forward_function(train_y, output_name)
+            plt.plot(predictions, label="predictions")
+            plt.plot(raw_predictions.detach().numpy(), label="raw predictions")
+            plt.title(f"Model predictions for output {output_name}")
+            plt.legend()
+            plt.show()
         #     match = np.allclose(
         #         predictions, raw_predictions.detach().numpy(), rtol=1e-1, atol=1e-1
         #     )
@@ -344,36 +357,23 @@ class NfTiAdapter:
 
         return attributions, negative_attributions
 
-    def explain_multi(
+    def explain_list(
         self,
         method: str,
         target_indices: List[int],
         output_name: str,
-        ds: Optional[Union[List[str], np.ndarray]] = None,
-        y: Optional[np.ndarray] = None,
+        test_input_list: Optional[List[TimeSeries]] = None,
     ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
             raise ValueError(f"output_name {output_name} not in {self.output_names}")
         self._sanity_check()
-        if ds is None and y is None:
+        if test_input_list is None:
             ds, y = self._get_current_inference_data()
-        elif ds is not None and y is not None:
-            pass
         else:
-            raise ValueError("ds and y both have to be None, or both not None")
-        print(
-            self.nf.dataset.temporal[
-                :, self.nf.dataset.temporal_cols.get_loc("y")
-            ].shape
-        )
-        print(list(self.nf.uids))
-        print(self.nf.dataset.indptr)
-        plt.plot(
-            self.nf.dataset.temporal[:, self.nf.dataset.temporal_cols.get_loc("y")]
-        )
-        plt.show()
+            ds, y = self._arrays_from_time_series_list(test_input_list)
+
         exit()
         # add batch and feature dimension
         y = y[-self.inference_input_size :]
@@ -406,3 +406,15 @@ class NfTiAdapter:
             attributions.append(positive_attr)
 
         return attributions, negative_attributions
+
+    def _arrays_from_time_series_list(self, time_series_list: List[TimeSeries]):
+        ds = time_series_list[0].ds
+
+        # sort time_series_list by unique_id
+        uid_map = {uid: idx for idx, uid in enumerate(self.nf.uids)}
+        sorted_time_series_list = sorted(
+            time_series_list, key=lambda x: uid_map[x.unique_id]
+        )
+
+        y = np.vstack([ts.y for ts in sorted_time_series_list])
+        return ds, y

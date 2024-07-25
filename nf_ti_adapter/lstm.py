@@ -14,9 +14,13 @@ class LstmNfTiAdapter(NfTiAdapter):
 
     def _forward_function(self, inputs: torch.Tensor, output_name: str):
         output_index = self.output_names.index(output_name)
-        inputs = inputs[0, :, 0]
-        masks = torch.ones_like(inputs)
-        inputs = torch.unsqueeze(torch.vstack([inputs, masks]), 0)
+        inputs = inputs[0, ..., 0]
+        if len(self.nf.uids) > 1:
+            masks = torch.ones_like(inputs)
+            inputs = torch.stack([inputs, masks], dim=1)
+        else:
+            masks = torch.ones_like(inputs)
+            inputs = torch.unsqueeze(torch.vstack([inputs, masks]), 0)
         batch = {
             "temporal": inputs,
             "temporal_cols": pd.Index(["y", "available_mask"]),
@@ -24,4 +28,6 @@ class LstmNfTiAdapter(NfTiAdapter):
         }
         batch_idx = 0
         model_output = self.model.predict_step(batch, batch_idx)
+
+        # TODO first index for time series id
         return model_output[0, -1, :, output_index]
