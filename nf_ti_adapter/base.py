@@ -10,7 +10,7 @@ from neuralforecast.common._base_model import BaseModel  # noqa
 from statsforecast import StatsForecast
 from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
 
-from common.timeseries import TimeSeries
+from common.timeseries import AttributedTimeSeries, TimeSeries
 
 Model = TypeVar("Model", bound=BaseModel)
 
@@ -88,18 +88,21 @@ class NfTiAdapter:
         train_ds = train_ds[-self.inference_input_size :]
 
         if len(self.nf.uids) == 1:
-            train_y = train_y[:, -self.inference_input_size :]
-        else:
             train_y = train_y[-self.inference_input_size :]
+        else:
+            train_y = train_y[:, -self.inference_input_size :]
         return (
             train_ds,
             train_y,
         )
 
-    def _forward_function(self, inputs: torch.Tensor, output_name: str):
+    def _forward_function(
+        self, inputs: torch.Tensor, output_name: str, output_uid: Union[str, int] = None
+    ):
         raise NotImplementedError
 
     def _sanity_check(self):
+        """
         train_y = self._get_current_train_data()[1]
 
         # add batch dimension
@@ -117,13 +120,14 @@ class NfTiAdapter:
             plt.title(f"Model predictions for output {output_name}")
             plt.legend()
             plt.show()
-        #     match = np.allclose(
-        #         predictions, raw_predictions.detach().numpy(), rtol=1e-1, atol=1e-1
-        #     )
-        #     if not match:
-        #         raise ValueError(
-        #             f"Model predictions do not match for output {output_name}"
-        #         )
+            match = np.allclose(
+                predictions, raw_predictions.detach().numpy(), rtol=1e-1, atol=1e-1
+            )
+            if not match:
+                raise ValueError(
+                    f"Model predictions do not match for output {output_name}"
+                )
+        """
         pass
 
     def fit(self, ds: Union[List[str], np.ndarray], y: np.ndarray, **kwargs):
@@ -366,7 +370,7 @@ class NfTiAdapter:
         target_indices: List[int],
         output_name: str,
         test_input_list: Optional[List[TimeSeries]] = None,
-    ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+    ) -> List[AttributedTimeSeries]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
@@ -406,7 +410,22 @@ class NfTiAdapter:
             positive_attr = np.abs(attr.clip(min=0)) / max_attr
             attributions.append(positive_attr)
 
-        return attributions, negative_attributions
+        attributed_timeseries_list = []
+        for idx, uid in enumerate(self.nf.uids):
+            _y = y[0, :, idx].detach().numpy()
+            _positive_attributions = [attr[:, idx] for attr in attributions]
+            _negative_attributions = [attr[:, idx] for attr in negative_attributions]
+            attributed_timeseries_list.append(
+                AttributedTimeSeries(
+                    unique_id=uid,
+                    ds=ds,
+                    y=_y,
+                    positive_attributions=_positive_attributions,
+                    negative_attributions=_negative_attributions,
+                )
+            )
+
+        return attributed_timeseries_list
 
     def _arrays_from_time_series_list(self, time_series_list: List[TimeSeries]):
         ds = time_series_list[0].ds

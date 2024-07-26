@@ -94,25 +94,22 @@ test_input_list = [
 ]
 
 predictions = nf_ti_adapter.predict_list_plot(test_input_list)
-
-target_indices = list(range(HORIZON))[:5]
-attribution_list, negative_attribution_list = nf_ti_adapter.explain_list(
-    "TIG", target_indices, "-loc"
-)
-
-print(attribution_list)
-"""
+print(predictions)
+target_indices = list(range(HORIZON))[:2]
+attributed_timeseries_list = nf_ti_adapter.explain_list("TIG", target_indices, "-loc")
+ts = attributed_timeseries_list[0]
+print(ts)
 plot_attributions(
-    attribution_list,
-    negative_attribution_list,
+    ts.positive_attributions,
+    ts.negative_attributions,
     "-loc",
-    test_input_ds,
-    test_input_y,
-    predictions,
+    ts.ds,
+    ts.y,
+    predictions[predictions["unique_id"] == ts.unique_id],
     model,
     "TIG",
 )
-
+"""
 target_indices = list(range(len(predictions[f"{model}-scale"])))
 attribution_list, negative_attribution_list = nf_ti_adapter.explain(
     "TIG", target_indices, "-scale"
