@@ -95,10 +95,12 @@ test_input_list = [
 
 predictions = nf_ti_adapter.predict_list_plot(test_input_list)
 
-target_indices = list(range(len(predictions[f"{model}-loc"])))
-attribution_list, negative_attribution_list = nf_ti_adapter.explain_multi(
+target_indices = list(range(HORIZON))[:5]
+attribution_list, negative_attribution_list = nf_ti_adapter.explain_list(
     "TIG", target_indices, "-loc"
 )
+
+print(attribution_list)
 """
 plot_attributions(
     attribution_list,

@@ -80,7 +80,7 @@ class NfTiAdapter:
             temporal_stacked[i] = temporal_data[
                 self.nf.dataset.indptr[i] : self.nf.dataset.indptr[i + 1]
             ]
-        return self.nf.ds, temporal_stacked
+        return self.nf.ds, temporal_stacked.T
 
     def _get_current_inference_data(self):
         train_ds, train_y = self._get_current_train_data()
@@ -102,9 +102,12 @@ class NfTiAdapter:
     def _sanity_check(self):
         train_y = self._get_current_train_data()[1]
 
-        # add batch and feature dimension
+        # add batch dimension
         train_y = torch.unsqueeze(train_y, 0)
-        train_y = torch.unsqueeze(train_y, -1)
+
+        # add feature dimension
+        if len(self.nf.uids) == 1:
+            train_y = torch.unsqueeze(train_y, -1)
 
         for output_name in self.output_names:
             predictions = self.nf.predict()[f"{self.model}{output_name}"]
@@ -374,11 +377,9 @@ class NfTiAdapter:
         else:
             ds, y = self._arrays_from_time_series_list(test_input_list)
 
-        exit()
-        # add batch and feature dimension
+        # add batch dimension
         y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
-        y = torch.unsqueeze(y, -1)
 
         method_to_constructor = {
             "TIG": TemporalIntegratedGradients,

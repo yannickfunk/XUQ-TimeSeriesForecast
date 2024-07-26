@@ -12,13 +12,22 @@ class LstmNfTiAdapter(NfTiAdapter):
             raise ValueError("Model must be an instance of LSTM")
         super().__init__(model, freq)
 
-    def _forward_function(self, inputs: torch.Tensor, output_name: str):
+    def _forward_function(
+        self, inputs: torch.Tensor, output_name: str, output_uid: Union[str, int] = None
+    ) -> torch.Tensor:
         output_index = self.output_names.index(output_name)
-        inputs = inputs[0, ..., 0]
+        if output_uid is not None:
+            uid_index = self.nf.uids.index(output_uid)
+        else:
+            uid_index = 0
+
+        # check multiple or single time series inputs
         if len(self.nf.uids) > 1:
+            inputs = inputs[0].T
             masks = torch.ones_like(inputs)
             inputs = torch.stack([inputs, masks], dim=1)
         else:
+            inputs = inputs[0, ..., 0]
             masks = torch.ones_like(inputs)
             inputs = torch.unsqueeze(torch.vstack([inputs, masks]), 0)
         batch = {
@@ -28,6 +37,4 @@ class LstmNfTiAdapter(NfTiAdapter):
         }
         batch_idx = 0
         model_output = self.model.predict_step(batch, batch_idx)
-
-        # TODO first index for time series id
-        return model_output[0, -1, :, output_index]
+        return model_output[uid_index, -1, :, output_index]
