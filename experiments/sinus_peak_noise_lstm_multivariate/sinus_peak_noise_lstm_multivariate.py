@@ -94,11 +94,13 @@ test_input_list = [
 ]
 
 predictions = nf_ti_adapter.predict_list_plot(test_input_list)
-print(predictions)
+
 target_indices = list(range(HORIZON))[:2]
-attributed_timeseries_list = nf_ti_adapter.explain_list("TIG", target_indices, "-loc")
+attributed_timeseries_list = nf_ti_adapter.explain_list(
+    "TIG", target_indices, "-loc", test_input_list
+)
 ts = attributed_timeseries_list[0]
-print(ts)
+
 plot_attributions(
     ts.positive_attributions,
     ts.negative_attributions,

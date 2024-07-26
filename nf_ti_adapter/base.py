@@ -82,20 +82,6 @@ class NfTiAdapter:
             ]
         return self.nf.ds, temporal_stacked.T
 
-    def _get_current_inference_data(self):
-        train_ds, train_y = self._get_current_train_data()
-
-        train_ds = train_ds[-self.inference_input_size :]
-
-        if len(self.nf.uids) == 1:
-            train_y = train_y[-self.inference_input_size :]
-        else:
-            train_y = train_y[:, -self.inference_input_size :]
-        return (
-            train_ds,
-            train_y,
-        )
-
     def _forward_function(
         self, inputs: torch.Tensor, output_name: str, output_uid: Union[str, int] = None
     ):
@@ -179,19 +165,12 @@ class NfTiAdapter:
 
     def predict_plot(
         self,
-        ds: Optional[Union[List[str], np.ndarray]] = None,
-        y: Optional[np.ndarray] = None,
+        ds: Union[List[str], np.ndarray],
+        y: np.ndarray,
         test_ds: Optional[Union[List[str], np.ndarray]] = None,
         test_y: Optional[np.ndarray] = None,
     ) -> pd.DataFrame:
         predictions = self.predict(ds, y)
-
-        if ds is None and y is None:
-            ds, y = self._get_current_inference_data()
-        elif ds is not None and y is not None:
-            pass
-        else:
-            raise ValueError("ds and y both have to be None, or both not None")
 
         if self.point_output:
             self._plot_predictions_point(ds, y, predictions, test_ds, test_y)
@@ -318,21 +297,17 @@ class NfTiAdapter:
         method: str,
         target_indices: List[int],
         output_name: str,
-        ds: Optional[Union[List[str], np.ndarray]] = None,
-        y: Optional[np.ndarray] = None,
+        ds: Union[List[str], np.ndarray],
+        y: np.ndarray,
     ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
             raise ValueError(f"output_name {output_name} not in {self.output_names}")
         self._sanity_check()
-        if ds is None and y is None:
-            ds, y = self._get_current_inference_data()
-        elif ds is not None and y is not None:
-            pass
-        else:
-            raise ValueError("ds and y both have to be None, or both not None")
+
         # add batch and feature dimension
+        y = torch.tensor(y, dtype=torch.float32)
         y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
         y = torch.unsqueeze(y, -1)
@@ -369,19 +344,17 @@ class NfTiAdapter:
         method: str,
         target_indices: List[int],
         output_name: str,
-        test_input_list: Optional[List[TimeSeries]] = None,
+        test_input_list: List[TimeSeries],
     ) -> List[AttributedTimeSeries]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
             raise ValueError(f"output_name {output_name} not in {self.output_names}")
         self._sanity_check()
-        if test_input_list is None:
-            ds, y = self._get_current_inference_data()
-        else:
-            ds, y = self._arrays_from_time_series_list(test_input_list)
+        ds, y = self._arrays_from_time_series_list(test_input_list)
 
         # add batch dimension
+        print(y.shape)
         y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
 
@@ -437,4 +410,4 @@ class NfTiAdapter:
         )
 
         y = np.vstack([ts.y for ts in sorted_time_series_list])
-        return ds, y
+        return ds, torch.tensor(y.T, dtype=torch.float32)
