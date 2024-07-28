@@ -5,37 +5,40 @@ import tikzplotlib
 from lightning.pytorch.loggers import TensorBoardLogger
 from matplotlib import pyplot as plt
 from neuralforecast.losses.pytorch import DistributionLoss
-from neuralforecast.models import LSTM
+from neuralforecast.models import LSTM, NHITS
 
 from common.timeseries import TimeSeries
-from common.utils import (generate_sine_noisy_peaks, plot_attributions,
-                          train_test_split)
+from common.utils import generate_sine_noisy_peaks, plot_attributions, train_test_split
 from nf_ti_adapter.lstm import LstmNfTiAdapter
+from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
-SIZE = 1000
+SIZE = 8000
 HORIZON = 48
 LEVELS = [68]
 INPUT_SIZE = 2 * HORIZON
 TRAIN_SPLIT = 0.8
 VAL_SPLIT = 0.2
 
-model = LSTM(
+model = NHITS(
     input_size=INPUT_SIZE,
-    inference_input_size=INPUT_SIZE,
+    # inference_input_size=INPUT_SIZE,
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
-    max_steps=200,
+    max_steps=510,
     random_seed=40,
-    early_stop_patience_steps=5,
+    # early_stop_patience_steps=5,
+    val_check_steps=10,
     logger=TensorBoardLogger("logs"),
 )
 
-nf_ti_adapter = LstmNfTiAdapter(model, 1)
+nf_ti_adapter = NhitsNfTiAdapter(model, 1)
 
-_time_series_noisy = generate_sine_noisy_peaks(size=SIZE)
-_time_series_clean = generate_sine_noisy_peaks(size=SIZE, noise_mean=0, noise_std=0)
+_time_series_noisy = generate_sine_noisy_peaks(size=SIZE + 20)
+_time_series_clean = generate_sine_noisy_peaks(
+    size=SIZE + 20, noise_mean=0, noise_std=0
+)
 _time_series_sum = _time_series_noisy + _time_series_clean
 _time_series_ds = np.arange(len(_time_series_noisy))
 
@@ -43,17 +46,17 @@ time_series_list = [
     TimeSeries(
         unique_id="sine_noisy_peaks",
         ds=_time_series_ds,
-        y=_time_series_noisy,
+        y=_time_series_noisy[20 : SIZE + 20],
     ),
     TimeSeries(
         unique_id="sine_clean",
         ds=_time_series_ds,
-        y=_time_series_clean,
+        y=_time_series_clean[20 : SIZE + 20],
     ),
     TimeSeries(
         unique_id="sine_sum",
         ds=_time_series_ds,
-        y=_time_series_sum,
+        y=_time_series_sum[:SIZE],
     ),
 ]
 
@@ -65,13 +68,13 @@ train_time_series_list, test_time_series_list = train_test_split(
 # plot time series list with train / test split borders as vertical lines
 fig, axs = plt.subplots(len(time_series_list), 1, sharex="all")
 for i, time_series in enumerate(time_series_list):
-    axs[i].plot(time_series.y)
-    axs[i].axvline(
-        x=len(time_series.y) * TRAIN_SPLIT,
-        color="r",
-        label="train / test split",
-        linestyle="--",
-    )
+    axs[i].plot(time_series.y[:500])
+    # axs[i].axvline(
+    #     x=len(time_series.y) * TRAIN_SPLIT,
+    #     color="r",
+    #     label="train / test split",
+    #     linestyle="--",
+    # )
     axs[i].set_ylim(-5, 5)
     axs[i].set_title(time_series.unique_id)
     fig.subplots_adjust(hspace=0.6)
@@ -83,7 +86,7 @@ nf_ti_adapter.fit_list(
 
 # pick random INPUT_SIZE window from test set
 # start_idx = random.randint(0, len(test_ds) - INPUT_SIZE)
-start_idx = 98
+start_idx = 330
 test_input_list = [
     TimeSeries(
         unique_id=ts.unique_id,
@@ -97,9 +100,9 @@ predictions = nf_ti_adapter.predict_list_plot(test_input_list)
 
 target_indices = list(range(HORIZON))[:2]
 attributed_timeseries_list = nf_ti_adapter.explain_list(
-    "TIG", target_indices, "-loc", test_input_list
+    "TIG", target_indices, "-scale", "sine_sum", test_input_list
 )
-ts = attributed_timeseries_list[0]
+ts = attributed_timeseries_list[1]
 
 plot_attributions(
     ts.positive_attributions,

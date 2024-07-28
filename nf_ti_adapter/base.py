@@ -344,6 +344,7 @@ class NfTiAdapter:
         method: str,
         target_indices: List[int],
         output_name: str,
+        output_uid: str,
         test_input_list: List[TimeSeries],
     ) -> List[AttributedTimeSeries]:
         if not hasattr(self.nf, "ds"):
@@ -354,7 +355,6 @@ class NfTiAdapter:
         ds, y = self._arrays_from_time_series_list(test_input_list)
 
         # add batch dimension
-        print(y.shape)
         y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
 
@@ -365,9 +365,9 @@ class NfTiAdapter:
         attributions = []
         negative_attributions = []
         for target_idx in target_indices:
-            forward_callable = lambda x: self._forward_function(x, output_name)[
-                target_idx : target_idx + 1
-            ]
+            forward_callable = lambda x: self._forward_function(
+                x, output_name, output_uid
+            )[target_idx : target_idx + 1]
 
             explanation_method: TemporalIntegratedGradients = method_to_constructor[
                 method

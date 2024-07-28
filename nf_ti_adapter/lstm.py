@@ -17,7 +17,7 @@ class LstmNfTiAdapter(NfTiAdapter):
     ) -> torch.Tensor:
         output_index = self.output_names.index(output_name)
         if output_uid is not None:
-            uid_index = self.nf.uids.index(output_uid)
+            uid_index = list(self.nf.uids.values).index(output_uid)
         else:
             uid_index = 0
 
