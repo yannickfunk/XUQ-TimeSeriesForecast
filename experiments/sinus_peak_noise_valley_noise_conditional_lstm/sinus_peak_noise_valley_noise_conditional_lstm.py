@@ -29,12 +29,13 @@ model = LSTM(
     max_steps=2800,
     random_seed=40,
     # early_stop_patience_steps=5,
+    val_check_steps=10,
     logger=TensorBoardLogger("logs"),
 )
 
 nf_ti_adapter = LstmNfTiAdapter(model, 1)
 time_series = SimpleTimeSeries(
-    size=4000,
+    size=8000,
     base_amplitude=2.0,
     base_frequency=0.05,
     base_noise_scale=0,
@@ -58,7 +59,7 @@ for i, peak in enumerate(peaks):
     # skip peak with a probability
     if random.random() < 0.8 or i < marked_valley:
         continue
-    sub_arr = train_y[peak - 3 : peak + 3]
+    sub_arr = train_y[peak - 3 : peak + 4]
     sub_arr += np.random.normal(0, 2, len(sub_arr))
 
     valley_idx = min(i + 2, len(valleys) - 1)
@@ -88,7 +89,7 @@ predictions = nf_ti_adapter.predict_plot(ds=test_input_ds, y=test_input_y)
 
 target_indices = list(range(len(predictions[f"{model}-loc"])))
 attribution_list, negative_attribution_list = nf_ti_adapter.explain(
-    "TIG", target_indices, "-loc"
+    "TIG", target_indices, "-loc", test_input_ds, test_input_y
 )
 
 plot_attributions(
@@ -104,7 +105,7 @@ plot_attributions(
 
 target_indices = list(range(len(predictions[f"{model}-scale"])))
 attribution_list, negative_attribution_list = nf_ti_adapter.explain(
-    "TIG", target_indices, "-scale"
+    "TIG", target_indices, "-scale", test_input_ds, test_input_y
 )
 
 plot_attributions(
