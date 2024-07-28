@@ -25,9 +25,10 @@ model = PatchTST(
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    max_steps=2000,
+    max_steps=350,
     random_seed=40,
-    early_stop_patience_steps=5,
+    # early_stop_patience_steps=5,
+    val_check_steps=10,
     logger=TensorBoardLogger("logs"),
 )
 
@@ -46,7 +47,7 @@ for peak in peaks:
     # skip peak with a probability
     if random.random() < 0.8:
         continue
-    sub_arr = time_series[peak - 3 : peak + 3]
+    sub_arr = time_series[peak - 3 : peak + 4]
     sub_arr += np.random.normal(0, 2, len(sub_arr))
 
 # train test split
@@ -78,7 +79,7 @@ predictions = nf_ti_adapter.predict(
 
 target_indices = list(range(len(predictions[f"{model}-loc"])))
 attribution_list, negative_attribution_list = nf_ti_adapter.explain(
-    "TIG", target_indices, "-loc"
+    "TIG", target_indices, "-loc", test_input_ds, test_input_y
 )
 
 plot_attributions(
@@ -94,7 +95,7 @@ plot_attributions(
 
 target_indices = list(range(len(predictions[f"{model}-scale"])))
 attribution_list, negative_attribution_list = nf_ti_adapter.explain(
-    "TIG", target_indices, "-scale"
+    "TIG", target_indices, "-scale", test_input_ds, test_input_y
 )
 
 plot_attributions(
