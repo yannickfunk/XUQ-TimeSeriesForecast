@@ -68,6 +68,21 @@ class NfTiAdapter:
             ]
         )
 
+    @staticmethod
+    def _create_nf_dataframe_list_exogenous(
+        time_series_list: List[TimeSeries], target_uid
+    ):
+        fit_df_dict = {}
+        for ts in time_series_list:
+            if ts.unique_id == target_uid:
+                fit_df_dict["unique_id"] = ts.unique_id
+                fit_df_dict["y"] = ts.y
+                fit_df_dict["ds"] = ts.ds
+            else:
+                fit_df_dict[ts.unique_id] = ts.y
+        fit_df = pd.DataFrame(fit_df_dict)
+        return fit_df
+
     def _get_current_train_data(self):
         temporal_data = self.nf.dataset.temporal[
             :, self.nf.dataset.temporal_cols.get_loc("y")
@@ -129,6 +144,15 @@ class NfTiAdapter:
         # update model
         self.model = self.nf.models[0]
 
+    def fit_list_exogenous(
+        self, time_series_list: List[TimeSeries], target_uid, **kwargs
+    ):
+        fit_df = self._create_nf_dataframe_list_exogenous(time_series_list, target_uid)
+        self.nf.fit(df=fit_df, **kwargs)
+
+        # update model
+        self.model = self.nf.models[0]
+
     def predict(
         self,
         ds: Optional[Union[List[str], np.ndarray]] = None,
@@ -161,6 +185,52 @@ class NfTiAdapter:
         )
         fig.show()
 
+        return predictions
+
+    def predict_list_exogenous_plot(
+        self,
+        time_series_list: List[TimeSeries],
+        target_uid: str,
+    ) -> pd.DataFrame:
+        test_input = self._create_nf_dataframe_list_exogenous(
+            time_series_list, target_uid=target_uid
+        )
+        predictions = self.nf.predict(df=test_input)
+
+        # plot time series list with train / test split borders as vertical lines
+        fig, axs = plt.subplots(len(time_series_list), 1, sharex="all")
+        for i, ts in enumerate(time_series_list):
+            if ts.unique_id == target_uid:
+                axs[i].plot(test_input.ds, test_input["y"])
+                axs[i].plot(
+                    predictions.ds,
+                    predictions[f"{self.model}"],
+                    label="predictions",
+                    color="green",
+                )
+                axs[i].fill_between(
+                    predictions.ds,
+                    np.subtract(
+                        predictions[f"{self.model}-loc"],
+                        predictions[f"{self.model}-scale"],
+                    ),
+                    np.add(
+                        predictions[f"{self.model}-loc"],
+                        predictions[f"{self.model}-scale"],
+                    ),
+                    alpha=0.2,
+                    color="green",
+                    label="standard deviation",
+                )
+                axs[i].set_title(f"{ts.unique_id} - predictions")
+            else:
+                axs[i].plot(test_input.ds, test_input[ts.unique_id])
+                axs[i].set_title(ts.unique_id)
+
+            axs[i].set_ylim(-6, 6)
+            axs[i].legend(loc="upper left")
+            fig.subplots_adjust(hspace=0.6)
+        plt.show()
         return predictions
 
     def predict_plot(
