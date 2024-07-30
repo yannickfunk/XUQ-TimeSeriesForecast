@@ -132,7 +132,7 @@ def plot_attributions_exogenous(
             axs[i].set_ylim(-6, 6)
             fig.subplots_adjust(hspace=0.6)
 
-        fig.set_title(
+        fig.suptitle(
             f"{method} Attributions for {output_name}, predictions with {model}"
         )
         plt.savefig(f"results/{output_name[1:]}_attributions_{target_idx}.png")
