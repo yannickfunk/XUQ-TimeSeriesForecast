@@ -26,7 +26,7 @@ class NhitsNfTiAdapter(NfTiAdapter):
             masks = torch.ones_like(inputs)
             inputs = torch.stack([inputs, masks], dim=1)
         elif len(self.nf.dataset.temporal_cols) > 2:
-            masks = torch.ones((1, inputs.shape[1], 1))
+            masks = torch.ones((inputs.shape[0], inputs.shape[1], 1))
             inputs = torch.cat((inputs, masks), dim=2)
             inputs = inputs.permute(0, 2, 1)
         else:

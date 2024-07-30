@@ -7,7 +7,7 @@ import tikzplotlib
 from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
 
-from common.timeseries import TimeSeries
+from common.timeseries import AttributedTimeSeries, TimeSeries
 
 
 def plot_attributions(
@@ -61,6 +61,86 @@ def plot_attributions(
             f"results_tikz/{output_name[1:]}_attributions_{target_idx}.tex"
         )
         plt.show()
+
+
+def plot_attributions_exogenous(
+    attributed_time_series_list: List[AttributedTimeSeries],
+    target_uid: str,
+    output_name,
+    predictions,
+    model,
+    method,
+):
+
+    for target_idx in range(len(attributed_time_series_list[0].positive_attributions)):
+        # plot time series list with train / test split borders as vertical lines
+        fig, axs = plt.subplots(len(attributed_time_series_list), 1, sharex="all")
+
+        for i, ts in enumerate(attributed_time_series_list):
+            axs[i].plot(ts.ds, ts.y)
+
+            for attr_idx, attr in enumerate(ts.positive_attributions[target_idx]):
+                axs[i].axvline(
+                    x=float(ts.ds[attr_idx]),
+                    color="r",
+                    alpha=attr,
+                    linewidth=3,
+                )
+            for attr_idx, attr in enumerate(ts.negative_attributions[target_idx]):
+                axs[i].axvline(
+                    x=float(ts.ds[attr_idx]),
+                    color="b",
+                    alpha=attr,
+                    linewidth=3,
+                )
+
+            if ts.unique_id == target_uid:
+                axs[i].plot(
+                    predictions.ds,
+                    predictions[f"{model}-loc"],
+                    label="predictions",
+                    color="green",
+                )
+                axs[i].fill_between(
+                    predictions.ds,
+                    np.subtract(
+                        predictions[f"{model}-loc"],
+                        predictions[f"{model}-scale"],
+                    ),
+                    np.add(
+                        predictions[f"{model}-loc"],
+                        predictions[f"{model}-scale"],
+                    ),
+                    alpha=0.2,
+                    color="green",
+                    label="standard deviation",
+                )
+                axs[i].plot(
+                    predictions.ds.iloc[target_idx],
+                    predictions[f"{model}-loc"].iloc[target_idx],
+                    color="green",
+                    label="predicted point",
+                    linestyle=None,
+                    marker="x",
+                    markersize=10,
+                )
+                axs[i].set_title(f"{ts.unique_id} - predictions")
+                axs[i].legend(loc="upper left")
+            else:
+                axs[i].set_title(ts.unique_id)
+
+            axs[i].set_ylim(-6, 6)
+            fig.subplots_adjust(hspace=0.6)
+
+        fig.set_title(
+            f"{method} Attributions for {output_name}, predictions with {model}"
+        )
+        plt.savefig(f"results/{output_name[1:]}_attributions_{target_idx}.png")
+        tikzplotlib.save(
+            f"results_tikz/{output_name[1:]}_attributions_{target_idx}.tex"
+        )
+        plt.show()
+    return predictions
 
 
 def generate_sine_noisy_peaks(
