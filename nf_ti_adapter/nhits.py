@@ -20,19 +20,22 @@ class NhitsNfTiAdapter(NfTiAdapter):
             uid_index = list(self.nf.uids.values).index(output_uid)
         else:
             uid_index = 0
-
         # check multiple or single time series inputs
         if len(self.nf.uids) > 1:
             inputs = inputs[0].T
             masks = torch.ones_like(inputs)
             inputs = torch.stack([inputs, masks], dim=1)
+        elif len(self.nf.dataset.temporal_cols) > 2:
+            masks = torch.ones((1, inputs.shape[1], 1))
+            inputs = torch.cat((inputs, masks), dim=2)
+            inputs = inputs.permute(0, 2, 1)
         else:
             inputs = inputs[0, ..., 0]
             masks = torch.ones_like(inputs)
             inputs = torch.unsqueeze(torch.vstack([inputs, masks]), 0)
         batch = {
             "temporal": inputs,
-            "temporal_cols": pd.Index(["y", "available_mask"]),
+            "temporal_cols": self.nf.dataset.temporal_cols,
             "y_idx": 0,
         }
         batch_idx = 0

@@ -104,7 +104,7 @@ predictions = nf_ti_adapter.predict_list_exogenous_plot(
     test_input_list, target_uid="sine_sum"
 )
 
-"""
+
 target_indices = list(range(HORIZON))[:2]
 attributed_timeseries_list = nf_ti_adapter.explain_list(
     "TIG", target_indices, "-scale", "sine_sum", test_input_list
@@ -121,7 +121,7 @@ plot_attributions(
     model,
     "TIG",
 )
-
+"""
 target_indices = list(range(len(predictions[f"{model}-scale"])))
 attribution_list, negative_attribution_list = nf_ti_adapter.explain(
     "TIG", target_indices, "-scale"

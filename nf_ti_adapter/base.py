@@ -131,6 +131,19 @@ class NfTiAdapter:
         """
         pass
 
+    def _sanity_check_exog(self, time_series_list):
+        """
+        ds, y, uid_exog_list = self._arrays_from_time_series_list(time_series_list)
+
+        # add batch dimension
+        y = y[-self.inference_input_size :]
+        y = torch.unsqueeze(y, 0)
+        for output_name in self.output_names:
+            raw_predictions = self._forward_function(y, output_name)
+            break
+        """
+        pass
+
     def fit(self, ds: Union[List[str], np.ndarray], y: np.ndarray, **kwargs):
         self.nf.fit(df=self._create_nf_dataframe(ds, y), **kwargs)
 
@@ -421,8 +434,8 @@ class NfTiAdapter:
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
             raise ValueError(f"output_name {output_name} not in {self.output_names}")
-        self._sanity_check()
-        ds, y = self._arrays_from_time_series_list(test_input_list)
+        self._sanity_check_exog(test_input_list)
+        ds, y, uid_exog_list = self._arrays_from_time_series_list(test_input_list)
 
         # add batch dimension
         y = y[-self.inference_input_size :]
@@ -454,7 +467,7 @@ class NfTiAdapter:
             attributions.append(positive_attr)
 
         attributed_timeseries_list = []
-        for idx, uid in enumerate(self.nf.uids):
+        for idx, uid in enumerate(uid_exog_list):
             _y = y[0, :, idx].detach().numpy()
             _positive_attributions = [attr[:, idx] for attr in attributions]
             _negative_attributions = [attr[:, idx] for attr in negative_attributions]
@@ -475,9 +488,18 @@ class NfTiAdapter:
 
         # sort time_series_list by unique_id
         uid_map = {uid: idx for idx, uid in enumerate(self.nf.uids)}
+        exog_list = list(self.nf.dataset.temporal_cols)[1:-1]
+        for i, exog in enumerate(exog_list):
+            uid_map[exog] = len(self.nf.uids) + i
+
+        # get uid_exog_list from the entries in uid_map
+        uid_exog_list = [
+            k for k, v in sorted(uid_map.items(), key=lambda item: item[1])
+        ]
+
         sorted_time_series_list = sorted(
             time_series_list, key=lambda x: uid_map[x.unique_id]
         )
-
         y = np.vstack([ts.y for ts in sorted_time_series_list])
-        return ds, torch.tensor(y.T, dtype=torch.float32)
+
+        return ds, torch.tensor(y.T, dtype=torch.float32), uid_exog_list
