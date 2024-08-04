@@ -125,7 +125,6 @@ def plot_attributions_exogenous(
                     markersize=10,
                 )
                 axs[i].set_title(f"{ts.unique_id} - predictions")
-                axs[i].legend(loc="upper left")
             else:
                 axs[i].set_title(ts.unique_id)
 
@@ -170,6 +169,65 @@ def generate_sine_noisy_peaks(
     return base
 
 
+def add_noise(
+    array,
+    indices,
+    noise_mean: float = 0,
+    noise_std: float = 2,
+    noise_width: int = 6,
+):
+    for idx in indices:
+        limit = noise_width // 2
+        start = idx - limit
+        end = idx + limit + 1
+        array[start:end] += np.random.normal(noise_mean, noise_std, size=end - start)
+    return array
+
+
+def generate_sine_spiky(
+    size: int = 1000,
+    amplitude: float = 2.0,
+    frequency: float = 0.05,
+):
+    base = SimpleTimeSeries(
+        size=size,
+        base_amplitude=amplitude,
+        base_frequency=frequency,
+        base_noise_scale=0,
+        base_noise_amplitude=0,
+    ).synthetic_time_series
+    spike_idx = []
+    for i in range(len(base)):
+        if random.random() < 0.97:
+            continue
+        base[i] += -5
+        spike_idx.append(i)
+    return base, spike_idx
+
+
+def generate_sine_spiky_peaks(
+    size: int = 1000,
+    amplitude: float = 2.0,
+    frequency: float = 0.05,
+):
+    base = SimpleTimeSeries(
+        size=size,
+        base_amplitude=amplitude,
+        base_frequency=frequency,
+        base_noise_scale=0,
+        base_noise_amplitude=0,
+    ).synthetic_time_series
+    peaks, _ = find_peaks(base)
+    spike_idx = []
+    for peak in peaks:
+        # skip peak with a probability
+        if random.random() < 0.8:
+            continue
+        base[peak] += -5
+        spike_idx.append(peak)
+    return base, np.array(spike_idx)[:-1]
+
+
 def train_test_split(
     time_series_list: List[TimeSeries], train_split
 ) -> Tuple[List[TimeSeries], List[TimeSeries]]:
@@ -191,3 +249,17 @@ def train_test_split(
         for ts in time_series_list
     ]
     return train, test
+
+
+def plot_time_series_list(time_series_list: List[TimeSeries], limit=None):
+    fig, axs = plt.subplots(len(time_series_list), 1, sharex="all")
+    for i, time_series in enumerate(time_series_list):
+        if limit:
+            axs[i].plot(time_series.y[limit[0] : limit[1]])
+        else:
+            axs[i].plot(time_series.y)
+        axs[i].set_ylim(-5, 5)
+        axs[i].set_title(time_series.unique_id)
+        fig.subplots_adjust(hspace=0.6)
+    plt.show()
+    return fig, axs
