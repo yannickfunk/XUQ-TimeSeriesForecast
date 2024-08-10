@@ -243,6 +243,8 @@ class NfTiAdapter:
             axs[i].set_ylim(-6, 6)
             axs[i].legend(loc="upper left")
             fig.subplots_adjust(hspace=0.6)
+        plt.savefig(f"results/predictions_parametric.png")
+        tikzplotlib.save("results_tikz/predictions_parametric.tex")
         plt.show()
         return predictions
 
@@ -440,7 +442,6 @@ class NfTiAdapter:
         # add batch dimension
         y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
-
         method_to_constructor = {
             "TIG": TemporalIntegratedGradients,
             "AugOcc": AugmentedOcclusion,
@@ -455,9 +456,26 @@ class NfTiAdapter:
             explanation_method: TemporalIntegratedGradients = method_to_constructor[
                 method
             ](forward_callable)
-            attr = explanation_method.attribute(y, show_progress=True)[0, ...]
+            attr = explanation_method.attribute(
+                y,
+                show_progress=True,
+                return_temporal_attributions=True,
+            )
             attr = torch.nan_to_num(attr)
-            attr = attr.detach().numpy().squeeze()
+            attr = attr.detach().numpy()  # .squeeze()
+
+            # last idx with temporal attributions for nhits
+            attr = attr[0, -1, ...]
+
+            # new_attr = np.zeros((attr.shape[1], attr.shape[-1]))
+            # for i in range(len(new_attr)):
+            #     time_weights = np.stack(
+            #         [np.flip(np.arange(1, len(new_attr) + 1))] * 3
+            #     ).T
+            #     weighted_attr = attr[0, i, :, :] / time_weights
+            #     new_attr += weighted_attr
+            # attr = new_attr
+
             max_attr = np.max(np.abs(attr))
 
             negative_attr = np.abs(attr.clip(max=0)) / max_attr
