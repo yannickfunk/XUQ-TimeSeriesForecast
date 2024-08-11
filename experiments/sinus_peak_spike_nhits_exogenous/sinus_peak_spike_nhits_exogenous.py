@@ -2,15 +2,14 @@ import os
 
 import numpy as np
 from lightning.pytorch.loggers import TensorBoardLogger
-from neuralforecast.losses.pytorch import DistributionLoss
-from neuralforecast.models import LSTM, NHITS, TFT, TSMixer
+from neuralforecast.losses.pytorch import DistributionLoss, MQLoss
+from neuralforecast.models import NHITS
 
 from common.timeseries import TimeSeries
 from common.utils import (add_noise, generate_sine_noisy_peaks,
                           generate_sine_spiky_peaks,
                           plot_attributions_exogenous, plot_time_series_list,
                           train_test_split)
-from nf_ti_adapter.lstm import LstmNfTiAdapter
 from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
@@ -24,14 +23,15 @@ VAL_SPLIT = 0.2
 
 model = NHITS(
     input_size=INPUT_SIZE,
-    # inference_input_size=INPUT_SIZE,
     h=HORIZON,
-    loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
+    # loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
+    loss=MQLoss(level=LEVELS),
     max_steps=1700,
     random_seed=40,
     # early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
     hist_exog_list=["sine_spiky_a", "sine_spiky_b"],
+    scaler_type="identity",
     # exclude_insample_y=True,
 )
 
@@ -95,7 +95,7 @@ predictions = nf_ti_adapter.predict_list_exogenous_plot(
 
 target_indices = list(range(HORIZON))
 attributed_timeseries_list = nf_ti_adapter.explain_list(
-    "TIG", target_indices, "-loc", "sine_noisy", test_input_list
+    "TIG", target_indices, "-median", "sine_noisy", test_input_list
 )
 plot_attributions_exogenous(
     attributed_timeseries_list,
@@ -108,7 +108,7 @@ plot_attributions_exogenous(
 
 target_indices = list(range(HORIZON))
 attributed_timeseries_list = nf_ti_adapter.explain_list(
-    "TIG", target_indices, "-scale", "sine_noisy", test_input_list
+    "TIG", target_indices, "-lo-68", "sine_noisy", test_input_list
 )
 plot_attributions_exogenous(
     attributed_timeseries_list,

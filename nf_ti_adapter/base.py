@@ -30,9 +30,6 @@ class NfTiAdapter:
         (self.point_output, self.levels, self.parametric_output) = (
             self._parse_output_names()
         )
-        self.inference_input_size = getattr(
-            self.model, "inference_input_size", self.model.input_size
-        )
 
     def _parse_output_names(self) -> Tuple[bool, List[int], bool]:
         levels = []
@@ -214,22 +211,32 @@ class NfTiAdapter:
         fig, axs = plt.subplots(len(time_series_list), 1, sharex="all")
         for i, ts in enumerate(time_series_list):
             if ts.unique_id == target_uid:
+                if "-loc" in self.output_names:
+                    median = predictions[f"{self.model}-loc"]
+                    variance = predictions[f"{self.model}-scale"]
+                else:
+                    median = predictions[f"{self.model}-median"]
+                    variance = (
+                        predictions[f"{self.model}-hi-68"].values
+                        - predictions[f"{self.model}-lo-68"].values
+                    ) / 2
+
                 axs[i].plot(test_input.ds, test_input["y"])
                 axs[i].plot(
                     predictions.ds,
-                    predictions[f"{self.model}"],
+                    median,
                     label="predictions",
                     color="green",
                 )
                 axs[i].fill_between(
                     predictions.ds,
                     np.subtract(
-                        predictions[f"{self.model}-loc"],
-                        predictions[f"{self.model}-scale"],
+                        median,
+                        variance,
                     ),
                     np.add(
-                        predictions[f"{self.model}-loc"],
-                        predictions[f"{self.model}-scale"],
+                        median,
+                        variance,
                     ),
                     alpha=0.2,
                     color="green",
@@ -393,7 +400,6 @@ class NfTiAdapter:
 
         # add batch and feature dimension
         y = torch.tensor(y, dtype=torch.float32)
-        y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
         y = torch.unsqueeze(y, -1)
 
@@ -440,7 +446,6 @@ class NfTiAdapter:
         ds, y, uid_exog_list = self._arrays_from_time_series_list(test_input_list)
 
         # add batch dimension
-        y = y[-self.inference_input_size :]
         y = torch.unsqueeze(y, 0)
         method_to_constructor = {
             "TIG": TemporalIntegratedGradients,

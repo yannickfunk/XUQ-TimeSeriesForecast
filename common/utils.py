@@ -95,29 +95,39 @@ def plot_attributions_exogenous(
                 )
 
             if ts.unique_id == target_uid:
-                axs[i].plot(
-                    predictions.ds,
-                    predictions[f"{model}-loc"],
-                    label="predictions",
-                    color="green",
-                )
+                if f"{model}-loc" in predictions.columns:
+                    variance = predictions[f"{model}-scale"]
+                    median = predictions[f"{model}-loc"]
+                else:
+                    median = predictions[f"{model}-median"]
+                    variance = (
+                        predictions[f"{model}-hi-68"].values
+                        - predictions[f"{model}-lo-68"].values
+                    ) / 2
+
                 axs[i].fill_between(
                     predictions.ds,
                     np.subtract(
-                        predictions[f"{model}-loc"],
-                        predictions[f"{model}-scale"],
+                        median,
+                        variance,
                     ),
                     np.add(
-                        predictions[f"{model}-loc"],
-                        predictions[f"{model}-scale"],
+                        median,
+                        variance,
                     ),
                     alpha=0.2,
                     color="green",
                     label="standard deviation",
                 )
                 axs[i].plot(
+                    predictions.ds,
+                    median,
+                    label="predictions",
+                    color="green",
+                )
+                axs[i].plot(
                     predictions.ds.iloc[target_idx],
-                    predictions[f"{model}-loc"].iloc[target_idx],
+                    median.iloc[target_idx],
                     color="green",
                     label="predicted point",
                     linestyle=None,

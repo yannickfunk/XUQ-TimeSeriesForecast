@@ -24,4 +24,10 @@ class PatchTstNfTiAdapter(NfTiAdapter):
         }
         batch_idx = 0
         model_output = self.model.predict_step(batch, batch_idx)
+
+        if "-lo-" in output_name:
+            return (
+                model_output[0, :, output_index + 1] - model_output[0, :, output_index]
+            )
+
         return model_output[0, :, output_index]
