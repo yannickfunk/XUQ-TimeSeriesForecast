@@ -190,7 +190,39 @@ def add_noise(
         limit = noise_width // 2
         start = idx - limit
         end = idx + limit + 1
+        if end > len(array):
+            break
+
         array[start:end] += np.random.normal(noise_mean, noise_std, size=end - start)
+    return array
+
+
+def add_amplitude_random(array):
+    # get indices where array is close to zero
+    zero_indices = np.argwhere(np.abs(array) < 0.2).T[0]
+
+    i = 0
+    indices_factors = []
+    while i < len(zero_indices) - 2:
+        idx = zero_indices[i]
+        next_idx = zero_indices[i + 2] if i + 2 < len(zero_indices) else len(array)
+        length = next_idx - idx
+
+        if random.random() < 0.1:
+            factor = 3 * np.ones(length)
+            array[idx:next_idx] *= factor
+            indices_factors.append(((idx, next_idx), factor[0]))
+        i += 2
+    return array, indices_factors
+
+
+def add_amplitude(array, indices_factors, shift):
+    for (start, end), factor in indices_factors:
+        # check if shift exceeds bounds
+        if end + shift > len(array):
+            break
+
+        array[start + shift : end + shift] *= factor
     return array
 
 
@@ -236,6 +268,34 @@ def generate_sine_spiky_peaks(
         base[peak] += -5
         spike_idx.append(peak)
     return base, np.array(spike_idx)[:-1]
+
+
+def generate_sine(
+    size: int = 1000,
+    amplitude: float = 2.0,
+    frequency: float = 0.05,
+):
+    base = SimpleTimeSeries(
+        size=size,
+        base_amplitude=amplitude,
+        base_frequency=frequency,
+        base_noise_scale=0,
+        base_noise_amplitude=0,
+    ).synthetic_time_series
+    return base
+
+
+def add_spiky_peaks(array):
+    # also return indices
+    peaks, _ = find_peaks(array)
+    spike_idx = []
+    for peak in peaks:
+        # skip peak with a probability
+        if random.random() < 0.8:
+            continue
+        array[peak] += -5
+        spike_idx.append(peak)
+    return array, np.array(spike_idx)[:-1]
 
 
 def train_test_split(
