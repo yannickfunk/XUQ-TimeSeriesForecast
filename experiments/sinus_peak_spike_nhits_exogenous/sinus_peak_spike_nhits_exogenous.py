@@ -10,7 +10,10 @@ from common.utils import (add_noise, generate_sine_noisy_peaks,
                           generate_sine_spiky_peaks,
                           plot_attributions_exogenous, plot_time_series_list,
                           train_test_split)
+from nf_ti_adapter.base import METHOD_TO_CONSTRUCTOR
 from nf_ti_adapter.nhits import NhitsNfTiAdapter
+
+ATTR_METHODS = METHOD_TO_CONSTRUCTOR.keys()
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
@@ -24,14 +27,14 @@ VAL_SPLIT = 0.2
 model = NHITS(
     input_size=INPUT_SIZE,
     h=HORIZON,
-    # loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
-    loss=MQLoss(level=LEVELS),
+    loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
+    # loss=MQLoss(level=LEVELS),
     max_steps=1700,
     random_seed=40,
     # early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
     hist_exog_list=["sine_spiky_a", "sine_spiky_b"],
-    scaler_type="identity",
+    scaler_type="robust",
     # exclude_insample_y=True,
 )
 
@@ -93,28 +96,29 @@ predictions = nf_ti_adapter.predict_list_exogenous_plot(
     test_input_list, target_uid="sine_noisy"
 )
 
-target_indices = list(range(HORIZON))
-attributed_timeseries_list = nf_ti_adapter.explain_list(
-    "TIG", target_indices, "-median", "sine_noisy", test_input_list
-)
-plot_attributions_exogenous(
-    attributed_timeseries_list,
-    "sine_noisy",
-    "-loc",
-    predictions,
-    model,
-    "TIG",
-)
+for attr_method in ATTR_METHODS:
+    target_indices = list(range(HORIZON))
+    attributed_timeseries_list = nf_ti_adapter.explain_list(
+        attr_method, target_indices, "-loc", "sine_noisy", test_input_list
+    )
+    plot_attributions_exogenous(
+        attributed_timeseries_list,
+        "sine_noisy",
+        "-loc",
+        predictions,
+        model,
+        attr_method,
+    )
 
-target_indices = list(range(HORIZON))
-attributed_timeseries_list = nf_ti_adapter.explain_list(
-    "TIG", target_indices, "-lo-68", "sine_noisy", test_input_list
-)
-plot_attributions_exogenous(
-    attributed_timeseries_list,
-    "sine_noisy",
-    "-scale",
-    predictions,
-    model,
-    "TIG",
-)
+    target_indices = list(range(HORIZON))
+    attributed_timeseries_list = nf_ti_adapter.explain_list(
+        attr_method, target_indices, "-scale", "sine_noisy", test_input_list
+    )
+    plot_attributions_exogenous(
+        attributed_timeseries_list,
+        "sine_noisy",
+        "-scale",
+        predictions,
+        model,
+        attr_method,
+    )

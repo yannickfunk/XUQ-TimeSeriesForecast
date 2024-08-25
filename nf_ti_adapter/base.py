@@ -497,6 +497,8 @@ class NfTiAdapter:
             attr = self._attribute(explanation_method, y)
 
             max_attr = np.max(np.abs(attr))
+            if max_attr < 1e-6:
+                max_attr = 1
 
             negative_attr = np.abs(attr.clip(max=0)) / max_attr
             negative_attributions.append(negative_attr)
