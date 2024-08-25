@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import tikzplotlib
 import torch
+from captum.attr import (LRP, FeatureAblation, InputXGradient,
+                         IntegratedGradients, Lime, Occlusion, Saliency)
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
@@ -13,6 +15,16 @@ from tint.attr import AugmentedOcclusion, TemporalIntegratedGradients
 from common.timeseries import AttributedTimeSeries, TimeSeries
 
 Model = TypeVar("Model", bound=BaseModel)
+
+METHOD_TO_CONSTRUCTOR = {
+    "TIG": TemporalIntegratedGradients,
+    "IG": IntegratedGradients,
+    "SAL": Saliency,
+    "IXG": InputXGradient,
+    "FA": FeatureAblation,
+    "OCC": Occlusion,
+    "LIME": Lime,
+}
 
 
 class NfTiAdapter:
@@ -384,6 +396,37 @@ class NfTiAdapter:
         tikzplotlib.save("results_tikz/predictions_parametric.tex")
         plt.show()
 
+    @staticmethod
+    def _attribute(method, y):
+        if isinstance(method, TemporalIntegratedGradients):
+            attr = method.attribute(
+                y, return_temporal_attributions=True, show_progress=True
+            )
+        elif isinstance(method, IntegratedGradients):
+            attr = method.attribute(y)
+        elif isinstance(method, Saliency):
+            attr = method.attribute(y, abs=False)
+        elif isinstance(method, InputXGradient):
+            attr = method.attribute(y)
+        elif isinstance(method, Occlusion):
+            attr = method.attribute(y, sliding_window_shapes=(1, 1), show_progress=True)
+        elif isinstance(method, FeatureAblation):
+            attr = method.attribute(y)
+        elif isinstance(method, Lime):
+            attr = method.attribute(y, n_samples=200, show_progress=True)
+        elif isinstance(method, LRP):
+            attr = method.attribute(y)
+        else:
+            raise ValueError(f"Method {method} not supported")
+
+        attr = torch.nan_to_num(attr)
+        attr = attr.detach().numpy()
+
+        if isinstance(method, TemporalIntegratedGradients):
+            return attr[0, -1, :, :]
+
+        return attr[0, :, :]
+
     def explain(
         self,
         method: str,
@@ -403,10 +446,6 @@ class NfTiAdapter:
         y = torch.unsqueeze(y, 0)
         y = torch.unsqueeze(y, -1)
 
-        method_to_constructor = {
-            "TIG": TemporalIntegratedGradients,
-            "AugOcc": AugmentedOcclusion,
-        }
         attributions = []
         negative_attributions = []
         for target_idx in target_indices:
@@ -414,14 +453,13 @@ class NfTiAdapter:
                 target_idx : target_idx + 1
             ]
 
-            explanation_method: TemporalIntegratedGradients = method_to_constructor[
-                method
-            ](forward_callable)
-            attr = explanation_method.attribute(y, show_progress=True)[0, ...]
-            attr = torch.nan_to_num(attr)
-            attr = attr.detach().numpy().squeeze()
-            max_attr = np.max(np.abs(attr))
+            explanation_method = METHOD_TO_CONSTRUCTOR[method](forward_callable)
 
+            attr = self._attribute(explanation_method, y)[:, 0]
+
+            max_attr = np.max(np.abs(attr))
+            if max_attr < 1e-6:
+                max_attr = 1
             negative_attr = np.abs(attr.clip(max=0)) / max_attr
             negative_attributions.append(negative_attr)
 
@@ -447,10 +485,6 @@ class NfTiAdapter:
 
         # add batch dimension
         y = torch.unsqueeze(y, 0)
-        method_to_constructor = {
-            "TIG": TemporalIntegratedGradients,
-            "AugOcc": AugmentedOcclusion,
-        }
         attributions = []
         negative_attributions = []
         for target_idx in target_indices:
@@ -458,28 +492,9 @@ class NfTiAdapter:
                 x, output_name, output_uid
             )[target_idx : target_idx + 1]
 
-            explanation_method: TemporalIntegratedGradients = method_to_constructor[
-                method
-            ](forward_callable)
-            attr = explanation_method.attribute(
-                y,
-                show_progress=True,
-                return_temporal_attributions=True,
-            )
-            attr = torch.nan_to_num(attr)
-            attr = attr.detach().numpy()  # .squeeze()
+            explanation_method = METHOD_TO_CONSTRUCTOR[method](forward_callable)
 
-            # last idx with temporal attributions for nhits
-            attr = attr[0, -1, ...]
-
-            # new_attr = np.zeros((attr.shape[1], attr.shape[-1]))
-            # for i in range(len(new_attr)):
-            #     time_weights = np.stack(
-            #         [np.flip(np.arange(1, len(new_attr) + 1))] * 3
-            #     ).T
-            #     weighted_attr = attr[0, i, :, :] / time_weights
-            #     new_attr += weighted_attr
-            # attr = new_attr
+            attr = self._attribute(explanation_method, y)
 
             max_attr = np.max(np.abs(attr))
 

@@ -1,3 +1,4 @@
+import os
 import random
 from typing import List, Tuple
 
@@ -20,6 +21,10 @@ def plot_attributions(
     model,
     method,
 ):
+    # create results/{method} if it does not exist
+    os.makedirs(f"results/{method}", exist_ok=True)
+    os.makedirs(f"results_tikz/{method}", exist_ok=True)
+
     for idx, attributions in enumerate(attribution_list):
         target_idx = idx
         for i, attr in enumerate(attributions):
@@ -56,9 +61,9 @@ def plot_attributions(
         )
         plt.title(f"{method} Attributions for {output_name}, predictions with {model}")
         plt.legend()
-        plt.savefig(f"results/{output_name[1:]}_attributions_{target_idx}.png")
+        plt.savefig(f"results/{method}/{output_name[1:]}_attributions_{target_idx}.png")
         tikzplotlib.save(
-            f"results_tikz/{output_name[1:]}_attributions_{target_idx}.tex"
+            f"results_tikz/{method}/{output_name[1:]}_attributions_{target_idx}.tex"
         )
         plt.show()
 
@@ -71,6 +76,9 @@ def plot_attributions_exogenous(
     model,
     method,
 ):
+    # create results/{method} if it does not exist
+    os.makedirs(f"results/{method}", exist_ok=True)
+    os.makedirs(f"results_tikz/{method}", exist_ok=True)
 
     for target_idx in range(len(attributed_time_series_list[0].positive_attributions)):
         # plot time series list with train / test split borders as vertical lines
@@ -144,9 +152,9 @@ def plot_attributions_exogenous(
         fig.suptitle(
             f"{method} Attributions for {output_name}, predictions with {model}"
         )
-        plt.savefig(f"results/{output_name[1:]}_attributions_{target_idx}.png")
+        plt.savefig(f"results/{method}/{output_name[1:]}_attributions_{target_idx}.png")
         tikzplotlib.save(
-            f"results_tikz/{output_name[1:]}_attributions_{target_idx}.tex"
+            f"results_tikz/{method}/{output_name[1:]}_attributions_{target_idx}.tex"
         )
         plt.show()
     return predictions
