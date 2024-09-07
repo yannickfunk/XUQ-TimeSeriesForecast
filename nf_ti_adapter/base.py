@@ -259,7 +259,7 @@ class NfTiAdapter:
                 axs[i].plot(test_input.ds, test_input[ts.unique_id])
                 axs[i].set_title(ts.unique_id)
 
-            axs[i].set_ylim(-6, 6)
+            # axs[i].set_ylim(-6, 6)
             axs[i].legend(loc="upper left")
             fig.subplots_adjust(hspace=0.6)
         plt.savefig(f"results/predictions_parametric.png")
