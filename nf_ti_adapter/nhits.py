@@ -8,7 +8,7 @@ from nf_ti_adapter.base import Model, NfTiAdapter
 
 class NhitsNfTiAdapter(NfTiAdapter):
     def __init__(self, model: Model, freq: Union[str, int]):
-        if str(model) != "NHITS":
+        if str(model) not in ["NHITS", "NBEATS", "NBEATSx", "MLP"]:
             raise ValueError("Model must be an instance of NHITS")
         super().__init__(model, freq)
 
