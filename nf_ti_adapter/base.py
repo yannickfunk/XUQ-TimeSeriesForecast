@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import tikzplotlib
 import torch
-from captum.attr import (LRP, FeatureAblation, InputXGradient,
-                         IntegratedGradients, Lime, Occlusion, Saliency)
+from captum.attr import (FeatureAblation, InputXGradient, IntegratedGradients,
+                         Lime)
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
@@ -17,12 +17,9 @@ from common.timeseries import AttributedTimeSeries, TimeSeries
 Model = TypeVar("Model", bound=BaseModel)
 
 METHOD_TO_CONSTRUCTOR = {
-    "TIG": TemporalIntegratedGradients,
     "IG": IntegratedGradients,
-    "SAL": Saliency,
     "IXG": InputXGradient,
     "FA": FeatureAblation,
-    "OCC": Occlusion,
     "LIME": Lime,
 }
 
@@ -259,7 +256,7 @@ class NfTiAdapter:
                 axs[i].plot(test_input.ds, test_input[ts.unique_id])
                 axs[i].set_title(ts.unique_id)
 
-            axs[i].set_ylim(-6, 6)
+            # axs[i].set_ylim(-6, 6)
             axs[i].legend(loc="upper left")
             fig.subplots_adjust(hspace=0.6)
         plt.savefig(f"results/predictions_parametric.png")
@@ -404,18 +401,12 @@ class NfTiAdapter:
             )
         elif isinstance(method, IntegratedGradients):
             attr = method.attribute(y)
-        elif isinstance(method, Saliency):
-            attr = method.attribute(y, abs=False)
         elif isinstance(method, InputXGradient):
             attr = method.attribute(y)
-        elif isinstance(method, Occlusion):
-            attr = method.attribute(y, sliding_window_shapes=(1, 1), show_progress=True)
         elif isinstance(method, FeatureAblation):
             attr = method.attribute(y)
         elif isinstance(method, Lime):
             attr = method.attribute(y, n_samples=200, show_progress=True)
-        elif isinstance(method, LRP):
-            attr = method.attribute(y)
         else:
             raise ValueError(f"Method {method} not supported")
 

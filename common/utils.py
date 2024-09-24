@@ -28,15 +28,25 @@ def plot_attributions(
     for idx, attributions in enumerate(attribution_list):
         target_idx = idx
         for i, attr in enumerate(attributions):
+            if not isinstance(test_input_ds[i], np.datetime64):
+                x_value = float(test_input_ds[i])
+            else:
+                x_value = test_input_ds[i]
+
             plt.axvline(
-                x=float(test_input_ds[i]),
+                x=x_value,
                 color="r",
                 alpha=attr,
                 linewidth=3,
             )
         for i, attr in enumerate(negative_attribution_list[idx]):
+            if not isinstance(test_input_ds[i], np.datetime64):
+                x_value = float(test_input_ds[i])
+            else:
+                x_value = test_input_ds[i]
+
             plt.axvline(
-                x=float(test_input_ds[i]),
+                x=x_value,
                 color="b",
                 alpha=attr,
                 linewidth=3,
