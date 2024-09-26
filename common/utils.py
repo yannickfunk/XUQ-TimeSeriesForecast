@@ -75,7 +75,8 @@ def plot_attributions(
         tikzplotlib.save(
             f"results_tikz/{method}/{output_name[1:]}_attributions_{target_idx}.tex"
         )
-        plt.show()
+        plt.close()
+        # plt.show()
 
 
 def plot_attributions_exogenous(
@@ -166,7 +167,8 @@ def plot_attributions_exogenous(
         tikzplotlib.save(
             f"results_tikz/{method}/{output_name[1:]}_attributions_{target_idx}.tex"
         )
-        plt.show()
+        plt.close()
+        # plt.show()
     return predictions
 
 
