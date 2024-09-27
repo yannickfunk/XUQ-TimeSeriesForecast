@@ -1,0 +1,3389 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{green}{RGB}{0,128,0}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
+
+\begin{groupplot}[group style={group size=1 by 3}]
+\nextgroupplot[
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+tick pos=left,
+title={sine\_noisy - predictions},
+x grid style={darkgray176},
+xmin=80128.85, xmax=80286.15,
+xtick style={color=black},
+xticklabels={},
+y grid style={darkgray176},
+ymin=-6, ymax=6,
+ytick style={color=black}
+]
+\path [draw=green, fill=green, opacity=0.2]
+(axis cs:80232,-3.04216051101685)
+--(axis cs:80232,-3.53118991851807)
+--(axis cs:80233,-3.91969180107117)
+--(axis cs:80234,-4.19585561752319)
+--(axis cs:80235,-4.01672792434692)
+--(axis cs:80236,-3.47806286811829)
+--(axis cs:80237,-2.48552966117859)
+--(axis cs:80238,-1.53137016296387)
+--(axis cs:80239,-0.705114245414734)
+--(axis cs:80240,0.126357078552246)
+--(axis cs:80241,0.529377400875092)
+--(axis cs:80242,1.01592171192169)
+--(axis cs:80243,1.34010255336761)
+--(axis cs:80244,1.33022665977478)
+--(axis cs:80245,1.14395868778229)
+--(axis cs:80246,0.978536128997803)
+--(axis cs:80247,0.8098304271698)
+--(axis cs:80248,0.179108858108521)
+--(axis cs:80249,-0.296642690896988)
+--(axis cs:80250,-0.846230387687683)
+--(axis cs:80251,-1.50185811519623)
+--(axis cs:80252,-1.81353390216827)
+--(axis cs:80253,-2.21480274200439)
+--(axis cs:80254,-2.35274243354797)
+--(axis cs:80255,-2.18718266487122)
+--(axis cs:80256,-2.14461874961853)
+--(axis cs:80257,-1.55434024333954)
+--(axis cs:80258,-1.12538325786591)
+--(axis cs:80259,-0.555268168449402)
+--(axis cs:80260,0.23583610355854)
+--(axis cs:80261,0.202016115188599)
+--(axis cs:80262,-0.0279701948165894)
+--(axis cs:80263,0.330568790435791)
+--(axis cs:80264,0.60144054889679)
+--(axis cs:80265,-0.17207145690918)
+--(axis cs:80266,0.0530943870544434)
+--(axis cs:80267,-0.231467843055725)
+--(axis cs:80268,0.199587792158127)
+--(axis cs:80269,-0.287915170192719)
+--(axis cs:80270,-1.19924664497375)
+--(axis cs:80271,-1.64702069759369)
+--(axis cs:80272,-2.19201231002808)
+--(axis cs:80273,-2.50372743606567)
+--(axis cs:80274,-2.69064235687256)
+--(axis cs:80275,-2.30356788635254)
+--(axis cs:80276,-2.22785711288452)
+--(axis cs:80277,-1.68914532661438)
+--(axis cs:80278,-0.995582222938538)
+--(axis cs:80279,-0.536737263202667)
+--(axis cs:80279,-0.0458499193191528)
+--(axis cs:80279,-0.0458499193191528)
+--(axis cs:80278,-0.506322026252747)
+--(axis cs:80277,-1.20009446144104)
+--(axis cs:80276,-1.73870861530304)
+--(axis cs:80275,-1.81437695026398)
+--(axis cs:80274,-2.20159339904785)
+--(axis cs:80273,-2.01465463638306)
+--(axis cs:80272,-1.7028911113739)
+--(axis cs:80271,-1.15769374370575)
+--(axis cs:80270,-0.709721028804779)
+--(axis cs:80269,0.203577876091003)
+--(axis cs:80268,0.726115584373474)
+--(axis cs:80267,2.31233406066895)
+--(axis cs:80266,3.33139324188232)
+--(axis cs:80265,3.88782358169556)
+--(axis cs:80264,3.31623792648315)
+--(axis cs:80263,2.93924069404602)
+--(axis cs:80262,3.03549098968506)
+--(axis cs:80261,1.60103034973145)
+--(axis cs:80260,0.728082656860352)
+--(axis cs:80259,-0.0661534070968628)
+--(axis cs:80258,-0.636354804039001)
+--(axis cs:80257,-1.06531322002411)
+--(axis cs:80256,-1.65559196472168)
+--(axis cs:80255,-1.69815599918365)
+--(axis cs:80254,-1.8637158870697)
+--(axis cs:80253,-1.72577607631683)
+--(axis cs:80252,-1.32450735569)
+--(axis cs:80251,-1.01283156871796)
+--(axis cs:80250,-0.357203751802444)
+--(axis cs:80249,0.192383915185928)
+--(axis cs:80248,0.668135464191437)
+--(axis cs:80247,1.29885697364807)
+--(axis cs:80246,1.46756267547607)
+--(axis cs:80245,1.63298523426056)
+--(axis cs:80244,1.81925320625305)
+--(axis cs:80243,1.82912909984589)
+--(axis cs:80242,1.50494825839996)
+--(axis cs:80241,1.01840400695801)
+--(axis cs:80240,0.615383684635162)
+--(axis cs:80239,-0.21608766913414)
+--(axis cs:80238,-1.0423436164856)
+--(axis cs:80237,-1.99650311470032)
+--(axis cs:80236,-2.98903584480286)
+--(axis cs:80235,-3.52770090103149)
+--(axis cs:80234,-3.70682859420776)
+--(axis cs:80233,-3.43066382408142)
+--(axis cs:80232,-3.04216051101685)
+--cycle;
+
+\addplot [semithick, steelblue31119180]
+table {%
+80136 -1.68819510936737
+80137 -1.27418076992035
+80138 -0.735438168048859
+80139 -0.124704360961914
+80140 0.498236626386642
+80141 1.07240569591522
+80142 1.54159820079803
+80143 1.85988533496857
+80144 1.99611032009125
+80145 1.93693828582764
+80146 1.68816149234772
+80147 1.2741322517395
+80148 0.735379755496979
+80149 0.12464164942503
+80150 -0.498297452926636
+80151 -1.07245874404907
+80152 -1.54163825511932
+80153 -1.85990846157074
+80154 -1.9961142539978
+80155 -1.93692266941071
+80156 -1.68812775611877
+80157 -1.27408385276794
+80158 -0.735321283340454
+80159 -0.124578937888145
+80160 0.498358309268951
+80161 1.07251179218292
+80162 1.54167830944061
+80163 1.85993158817291
+80164 1.99611818790436
+80165 1.93690693378448
+80166 1.68809401988983
+80167 1.27403545379639
+80168 0.735262870788574
+80169 0.124516233801842
+80170 -0.498419165611267
+80171 -1.07256484031677
+80172 -1.5417183637619
+80173 -1.85995471477509
+80174 -1.99612212181091
+80175 -1.93689131736755
+80176 -1.68806040287018
+80177 -1.27398693561554
+80178 -0.735204458236694
+80179 -0.124453522264957
+80180 0.498480021953583
+80181 -4.44879961013794
+80182 0.646496713161469
+80183 3.18709683418274
+80184 -4.1256308555603
+80185 2.6250114440918
+80186 -1.24886560440063
+80187 -0.505231380462646
+80188 0.73514598608017
+80189 0.124390810728073
+80190 -0.498540878295898
+80191 -1.07267093658447
+80192 -1.54179835319519
+80193 -1.86000084877014
+80194 -1.99612998962402
+80195 -1.9368599653244
+80196 -1.68799293041229
+80197 -1.27389013767242
+80198 -0.73508757352829
+80199 -0.124328099191189
+80200 0.498601704835892
+80201 2.36293888092041
+80202 0.505249261856079
+80203 1.09504675865173
+80204 0.362886697053909
+80205 2.01431941986084
+80206 4.22714805603027
+80207 0.217120036482811
+80208 0.73502916097641
+80209 0.124265387654305
+80210 -0.498662561178207
+80211 -1.07277703285217
+80212 -1.54187846183777
+80213 -1.86004710197449
+80214 -1.99613773822784
+80215 -1.93682861328125
+80216 -1.6879255771637
+80217 -1.27379322052002
+80218 -0.734970688819885
+80219 -0.12420267611742
+80220 0.498723417520523
+80221 3.15210199356079
+80222 -2.35510444641113
+80223 -1.15109658241272
+80224 3.28516864776611
+80225 0.85689640045166
+80226 -0.27378723025322
+80227 3.67291069030762
+80228 0.734912276268005
+80229 0.372419893741608
+80230 -1.49635279178619
+80231 -3.21864914894104
+};
+\addplot [very thick, red, opacity=0.5760957598686218]
+table {%
+80136 -6
+80136 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80137 -6
+80137 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80138 -6
+80138 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80139 -6
+80139 6
+};
+\addplot [very thick, red, opacity=0.1653900444507599]
+table {%
+80140 -6
+80140 6
+};
+\addplot [very thick, red, opacity=0.3816123306751251]
+table {%
+80141 -6
+80141 6
+};
+\addplot [very thick, red, opacity=0.12139537185430527]
+table {%
+80142 -6
+80142 6
+};
+\addplot [very thick, red, opacity=0.08937404304742813]
+table {%
+80143 -6
+80143 6
+};
+\addplot [very thick, red, opacity=0.07266414910554886]
+table {%
+80144 -6
+80144 6
+};
+\addplot [very thick, red, opacity=0.03561527654528618]
+table {%
+80145 -6
+80145 6
+};
+\addplot [very thick, red, opacity=0.04397663474082947]
+table {%
+80146 -6
+80146 6
+};
+\addplot [very thick, red, opacity=0.1470082551240921]
+table {%
+80147 -6
+80147 6
+};
+\addplot [very thick, red, opacity=0.09208979457616806]
+table {%
+80148 -6
+80148 6
+};
+\addplot [very thick, red, opacity=0.026201985776424408]
+table {%
+80149 -6
+80149 6
+};
+\addplot [very thick, red, opacity=0.0743279680609703]
+table {%
+80150 -6
+80150 6
+};
+\addplot [very thick, red, opacity=0.05738784372806549]
+table {%
+80151 -6
+80151 6
+};
+\addplot [very thick, red, opacity=0.14196693897247314]
+table {%
+80152 -6
+80152 6
+};
+\addplot [very thick, red, opacity=0.12584473192691803]
+table {%
+80153 -6
+80153 6
+};
+\addplot [very thick, red, opacity=0.25015759468078613]
+table {%
+80154 -6
+80154 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80155 -6
+80155 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80156 -6
+80156 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80157 -6
+80157 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80158 -6
+80158 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80159 -6
+80159 6
+};
+\addplot [very thick, red, opacity=0.1707228124141693]
+table {%
+80160 -6
+80160 6
+};
+\addplot [very thick, red, opacity=0.20800143480300903]
+table {%
+80161 -6
+80161 6
+};
+\addplot [very thick, red, opacity=0.2495870143175125]
+table {%
+80162 -6
+80162 6
+};
+\addplot [very thick, red, opacity=0.2465522587299347]
+table {%
+80163 -6
+80163 6
+};
+\addplot [very thick, red, opacity=0.33709976077079773]
+table {%
+80164 -6
+80164 6
+};
+\addplot [very thick, red, opacity=0.19622176885604858]
+table {%
+80165 -6
+80165 6
+};
+\addplot [very thick, red, opacity=0.14379596710205078]
+table {%
+80166 -6
+80166 6
+};
+\addplot [very thick, red, opacity=0.10379351675510406]
+table {%
+80167 -6
+80167 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80168 -6
+80168 6
+};
+\addplot [very thick, red, opacity=0.024476928636431694]
+table {%
+80169 -6
+80169 6
+};
+\addplot [very thick, red, opacity=0.11367391049861908]
+table {%
+80170 -6
+80170 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80171 -6
+80171 6
+};
+\addplot [very thick, red, opacity=0.24621474742889404]
+table {%
+80172 -6
+80172 6
+};
+\addplot [very thick, red, opacity=0.36965465545654297]
+table {%
+80173 -6
+80173 6
+};
+\addplot [very thick, red, opacity=0.2707035541534424]
+table {%
+80174 -6
+80174 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80175 -6
+80175 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80176 -6
+80176 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80177 -6
+80177 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80178 -6
+80178 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80179 -6
+80179 6
+};
+\addplot [very thick, red, opacity=0.1364908069372177]
+table {%
+80180 -6
+80180 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80181 -6
+80181 6
+};
+\addplot [very thick, red, opacity=0.01289093866944313]
+table {%
+80182 -6
+80182 6
+};
+\addplot [very thick, red, opacity=0.5774467587471008]
+table {%
+80183 -6
+80183 6
+};
+\addplot [very thick, red, opacity=0.00840455386787653]
+table {%
+80184 -6
+80184 6
+};
+\addplot [very thick, red, opacity=0.37331125140190125]
+table {%
+80185 -6
+80185 6
+};
+\addplot [very thick, red, opacity=0.07848253846168518]
+table {%
+80186 -6
+80186 6
+};
+\addplot [very thick, red, opacity=0.10060068219900131]
+table {%
+80187 -6
+80187 6
+};
+\addplot [very thick, red, opacity=0.19028469920158386]
+table {%
+80188 -6
+80188 6
+};
+\addplot [very thick, red, opacity=0.03890446946024895]
+table {%
+80189 -6
+80189 6
+};
+\addplot [very thick, red, opacity=0.013573556207120419]
+table {%
+80190 -6
+80190 6
+};
+\addplot [very thick, red, opacity=0.03008740209043026]
+table {%
+80191 -6
+80191 6
+};
+\addplot [very thick, red, opacity=0.0015290069859474897]
+table {%
+80192 -6
+80192 6
+};
+\addplot [very thick, red, opacity=0.22219780087471008]
+table {%
+80193 -6
+80193 6
+};
+\addplot [very thick, red, opacity=0.18623694777488708]
+table {%
+80194 -6
+80194 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80195 -6
+80195 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80196 -6
+80196 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80197 -6
+80197 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80198 -6
+80198 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80199 -6
+80199 6
+};
+\addplot [very thick, red, opacity=0.1614946573972702]
+table {%
+80200 -6
+80200 6
+};
+\addplot [very thick, red, opacity=0.6173784732818604]
+table {%
+80201 -6
+80201 6
+};
+\addplot [very thick, red, opacity=0.07910961657762527]
+table {%
+80202 -6
+80202 6
+};
+\addplot [very thick, red, opacity=0.2978881597518921]
+table {%
+80203 -6
+80203 6
+};
+\addplot [very thick, red, opacity=0.04718797653913498]
+table {%
+80204 -6
+80204 6
+};
+\addplot [very thick, red, opacity=0.3588689863681793]
+table {%
+80205 -6
+80205 6
+};
+\addplot [very thick, red, opacity=0.5377979278564453]
+table {%
+80206 -6
+80206 6
+};
+\addplot [very thick, red, opacity=0.04275523126125336]
+table {%
+80207 -6
+80207 6
+};
+\addplot [very thick, red, opacity=0.14275161921977997]
+table {%
+80208 -6
+80208 6
+};
+\addplot [very thick, red, opacity=0.052713003009557724]
+table {%
+80209 -6
+80209 6
+};
+\addplot [very thick, red, opacity=0.030211297795176506]
+table {%
+80210 -6
+80210 6
+};
+\addplot [very thick, red, opacity=0.10845790803432465]
+table {%
+80211 -6
+80211 6
+};
+\addplot [very thick, red, opacity=0.17751434445381165]
+table {%
+80212 -6
+80212 6
+};
+\addplot [very thick, red, opacity=0.16998893022537231]
+table {%
+80213 -6
+80213 6
+};
+\addplot [very thick, red, opacity=0.11370808631181717]
+table {%
+80214 -6
+80214 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80215 -6
+80215 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80216 -6
+80216 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80217 -6
+80217 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80218 -6
+80218 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80219 -6
+80219 6
+};
+\addplot [very thick, red, opacity=0.0898682028055191]
+table {%
+80220 -6
+80220 6
+};
+\addplot [very thick, red, opacity=0.35036712884902954]
+table {%
+80221 -6
+80221 6
+};
+\addplot [very thick, red, opacity=0.26701799035072327]
+table {%
+80222 -6
+80222 6
+};
+\addplot [very thick, red, opacity=0.19209520518779755]
+table {%
+80223 -6
+80223 6
+};
+\addplot [very thick, red, opacity=0.3051154613494873]
+table {%
+80224 -6
+80224 6
+};
+\addplot [very thick, red, opacity=0.02852374128997326]
+table {%
+80225 -6
+80225 6
+};
+\addplot [very thick, red, opacity=0.1670386791229248]
+table {%
+80226 -6
+80226 6
+};
+\addplot [very thick, red, opacity=0.3235826790332794]
+table {%
+80227 -6
+80227 6
+};
+\addplot [very thick, red, opacity=0.1867842674255371]
+table {%
+80228 -6
+80228 6
+};
+\addplot [very thick, red, opacity=0.15256555378437042]
+table {%
+80229 -6
+80229 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80230 -6
+80230 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80231 -6
+80231 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80136 -6
+80136 6
+};
+\addplot [very thick, blue, opacity=0.04900844767689705]
+table {%
+80137 -6
+80137 6
+};
+\addplot [very thick, blue, opacity=0.15260496735572815]
+table {%
+80138 -6
+80138 6
+};
+\addplot [very thick, blue, opacity=0.044432345777750015]
+table {%
+80139 -6
+80139 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80140 -6
+80140 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80141 -6
+80141 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80142 -6
+80142 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80143 -6
+80143 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80144 -6
+80144 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80145 -6
+80145 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80146 -6
+80146 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80147 -6
+80147 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80148 -6
+80148 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80149 -6
+80149 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80150 -6
+80150 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80151 -6
+80151 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80152 -6
+80152 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80153 -6
+80153 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80154 -6
+80154 6
+};
+\addplot [very thick, blue, opacity=0.24954476952552795]
+table {%
+80155 -6
+80155 6
+};
+\addplot [very thick, blue, opacity=0.12479753792285919]
+table {%
+80156 -6
+80156 6
+};
+\addplot [very thick, blue, opacity=0.09458481520414352]
+table {%
+80157 -6
+80157 6
+};
+\addplot [very thick, blue, opacity=0.2676236927509308]
+table {%
+80158 -6
+80158 6
+};
+\addplot [very thick, blue, opacity=0.05094759538769722]
+table {%
+80159 -6
+80159 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80160 -6
+80160 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80161 -6
+80161 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80162 -6
+80162 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80163 -6
+80163 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80164 -6
+80164 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80165 -6
+80165 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80166 -6
+80166 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80167 -6
+80167 6
+};
+\addplot [very thick, blue, opacity=0.020213652402162552]
+table {%
+80168 -6
+80168 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80169 -6
+80169 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80170 -6
+80170 6
+};
+\addplot [very thick, blue, opacity=0.05635109916329384]
+table {%
+80171 -6
+80171 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80172 -6
+80172 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80173 -6
+80173 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80174 -6
+80174 6
+};
+\addplot [very thick, blue, opacity=0.1635662466287613]
+table {%
+80175 -6
+80175 6
+};
+\addplot [very thick, blue, opacity=0.18374857306480408]
+table {%
+80176 -6
+80176 6
+};
+\addplot [very thick, blue, opacity=0.3783169686794281]
+table {%
+80177 -6
+80177 6
+};
+\addplot [very thick, blue, opacity=0.3705897927284241]
+table {%
+80178 -6
+80178 6
+};
+\addplot [very thick, blue, opacity=0.051475461572408676]
+table {%
+80179 -6
+80179 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80180 -6
+80180 6
+};
+\addplot [very thick, blue, opacity=0.1131071150302887]
+table {%
+80181 -6
+80181 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80182 -6
+80182 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80183 -6
+80183 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80184 -6
+80184 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80185 -6
+80185 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80186 -6
+80186 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80187 -6
+80187 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80188 -6
+80188 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80189 -6
+80189 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80190 -6
+80190 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80191 -6
+80191 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80192 -6
+80192 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80193 -6
+80193 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80194 -6
+80194 6
+};
+\addplot [very thick, blue, opacity=0.0064981612376868725]
+table {%
+80195 -6
+80195 6
+};
+\addplot [very thick, blue, opacity=0.33010363578796387]
+table {%
+80196 -6
+80196 6
+};
+\addplot [very thick, blue, opacity=0.6669992804527283]
+table {%
+80197 -6
+80197 6
+};
+\addplot [very thick, blue, opacity=0.3689957559108734]
+table {%
+80198 -6
+80198 6
+};
+\addplot [very thick, blue, opacity=0.0660359188914299]
+table {%
+80199 -6
+80199 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80200 -6
+80200 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80201 -6
+80201 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80202 -6
+80202 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80203 -6
+80203 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80204 -6
+80204 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80205 -6
+80205 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80206 -6
+80206 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80207 -6
+80207 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80208 -6
+80208 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80209 -6
+80209 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80210 -6
+80210 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80211 -6
+80211 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80212 -6
+80212 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80213 -6
+80213 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80214 -6
+80214 6
+};
+\addplot [very thick, blue, opacity=0.17634087800979614]
+table {%
+80215 -6
+80215 6
+};
+\addplot [very thick, blue, opacity=0.37674856185913086]
+table {%
+80216 -6
+80216 6
+};
+\addplot [very thick, blue, opacity=0.5301225185394287]
+table {%
+80217 -6
+80217 6
+};
+\addplot [very thick, blue, opacity=0.27599644660949707]
+table {%
+80218 -6
+80218 6
+};
+\addplot [very thick, blue, opacity=0.04899752885103226]
+table {%
+80219 -6
+80219 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80220 -6
+80220 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80221 -6
+80221 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80222 -6
+80222 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80223 -6
+80223 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80224 -6
+80224 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80225 -6
+80225 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80226 -6
+80226 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80227 -6
+80227 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80228 -6
+80228 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80229 -6
+80229 6
+};
+\addplot [very thick, blue, opacity=0.17166414856910706]
+table {%
+80230 -6
+80230 6
+};
+\addplot [very thick, blue, opacity=0.6788584589958191]
+table {%
+80231 -6
+80231 6
+};
+\addplot [semithick, green]
+table {%
+80232 -3.28667521476746
+80233 -3.67517781257629
+80234 -3.95134210586548
+80235 -3.77221441268921
+80236 -3.23354935646057
+80237 -2.24101638793945
+80238 -1.28685688972473
+80239 -0.460600972175598
+80240 0.370870381593704
+80241 0.773890733718872
+80242 1.26043498516083
+80243 1.58461582660675
+80244 1.57473993301392
+80245 1.38847196102142
+80246 1.22304940223694
+80247 1.05434370040894
+80248 0.423622161149979
+80249 -0.0521293878555298
+80250 -0.601717054843903
+80251 -1.25734484195709
+80252 -1.56902062892914
+80253 -1.97028934955597
+80254 -2.10822916030884
+80255 -1.94266927242279
+80256 -1.9001053571701
+80257 -1.30982673168182
+80258 -0.880869030952454
+80259 -0.310710787773132
+80260 0.481959372758865
+80261 0.901523232460022
+80262 1.50376045703888
+80263 1.63490474224091
+80264 1.95883917808533
+80265 1.85787606239319
+80266 1.69224381446838
+80267 1.04043304920197
+80268 0.462851673364639
+80269 -0.0421686470508575
+80270 -0.954483866691589
+80271 -1.40235722064972
+80272 -1.94745171070099
+80273 -2.25919103622437
+80274 -2.44611787796021
+80275 -2.05897235870361
+80276 -1.98328292369843
+80277 -1.44461989402771
+80278 -0.750952124595642
+80279 -0.29129359126091
+};
+\addplot [semithick, green, mark=x, mark size=5, mark options={solid}]
+table {%
+80279 -0.29129359126091
+};
+
+\nextgroupplot[
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+tick pos=left,
+title={sine\_spiky\_a},
+x grid style={darkgray176},
+xmin=80128.85, xmax=80286.15,
+xtick style={color=black},
+xticklabels={},
+y grid style={darkgray176},
+ymin=-6, ymax=6,
+ytick style={color=black}
+]
+\addplot [semithick, steelblue31119180]
+table {%
+80136 -1.68819510936737
+80137 -1.27418076992035
+80138 -0.735438168048859
+80139 -0.124704360961914
+80140 0.498236626386642
+80141 1.07240569591522
+80142 1.54159820079803
+80143 1.85988533496857
+80144 -3.00388956069946
+80145 1.93693828582764
+80146 1.68816149234772
+80147 1.2741322517395
+80148 0.735379755496979
+80149 0.12464164942503
+80150 -0.498297452926636
+80151 -1.07245874404907
+80152 -1.54163825511932
+80153 -1.85990846157074
+80154 -1.9961142539978
+80155 -1.93692266941071
+80156 -1.68812775611877
+80157 -1.27408385276794
+80158 -0.735321283340454
+80159 -0.124578937888145
+80160 0.498358309268951
+80161 1.07251179218292
+80162 1.54167830944061
+80163 1.85993158817291
+80164 -3.00388169288635
+80165 1.93690693378448
+80166 1.68809401988983
+80167 1.27403545379639
+80168 0.735262870788574
+80169 0.124516233801842
+80170 -0.498419165611267
+80171 -1.07256484031677
+80172 -1.5417183637619
+80173 -1.85995471477509
+80174 -1.99612212181091
+80175 -1.93689131736755
+80176 -1.68806040287018
+80177 -1.27398693561554
+80178 -0.735204458236694
+80179 -0.124453522264957
+80180 0.498480021953583
+80181 1.07261788845062
+80182 1.54175841808319
+80183 1.85997784137726
+80184 -3.00387406349182
+80185 1.93687570095062
+80186 1.68802666664124
+80187 1.27393853664398
+80188 0.73514598608017
+80189 0.373172432184219
+80190 -1.4956226348877
+80191 -3.21801280975342
+80192 -4.62539529800415
+80193 -5.580002784729
+80194 -5.98838996887207
+80195 -5.81057977676392
+80196 -5.06397867202759
+80197 -3.82167029380798
+80198 -2.20526266098022
+80199 -0.372984290122986
+80200 1.49580514431
+80201 3.21817183494568
+80202 4.62551498413086
+80203 5.58007192611694
+80204 5.98840141296387
+80205 5.81053304672241
+80206 5.06387758255005
+80207 3.82152509689331
+80208 2.20508742332458
+80209 0.124265387654305
+80210 -0.498662561178207
+80211 -1.07277703285217
+80212 -1.54187846183777
+80213 -1.86004710197449
+80214 -1.99613773822784
+80215 -1.93682861328125
+80216 -1.6879255771637
+80217 -1.27379322052002
+80218 -0.734970688819885
+80219 -0.12420267611742
+80220 0.498723417520523
+80221 1.07282996177673
+80222 1.54191839694977
+80223 1.86007010936737
+80224 1.9961416721344
+80225 1.93681299686432
+80226 1.68789184093475
+80227 1.27374482154846
+80228 0.734912276268005
+80229 0.124139964580536
+80230 -0.498784244060516
+80231 -1.07288300991058
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80136 -6
+80136 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80137 -6
+80137 6
+};
+\addplot [very thick, red, opacity=0.007155145052820444]
+table {%
+80138 -6
+80138 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80139 -6
+80139 6
+};
+\addplot [very thick, red, opacity=0.03855414316058159]
+table {%
+80140 -6
+80140 6
+};
+\addplot [very thick, red, opacity=0.16839157044887543]
+table {%
+80141 -6
+80141 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80142 -6
+80142 6
+};
+\addplot [very thick, red, opacity=0.29664966464042664]
+table {%
+80143 -6
+80143 6
+};
+\addplot [very thick, red, opacity=0.04928946867585182]
+table {%
+80144 -6
+80144 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80145 -6
+80145 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80146 -6
+80146 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80147 -6
+80147 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80148 -6
+80148 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80149 -6
+80149 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80150 -6
+80150 6
+};
+\addplot [very thick, red, opacity=0.02240723930299282]
+table {%
+80151 -6
+80151 6
+};
+\addplot [very thick, red, opacity=0.18330900371074677]
+table {%
+80152 -6
+80152 6
+};
+\addplot [very thick, red, opacity=0.12132226675748825]
+table {%
+80153 -6
+80153 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80154 -6
+80154 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80155 -6
+80155 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80156 -6
+80156 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80157 -6
+80157 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80158 -6
+80158 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80159 -6
+80159 6
+};
+\addplot [very thick, red, opacity=0.09809236973524094]
+table {%
+80160 -6
+80160 6
+};
+\addplot [very thick, red, opacity=0.16577976942062378]
+table {%
+80161 -6
+80161 6
+};
+\addplot [very thick, red, opacity=0.09307479858398438]
+table {%
+80162 -6
+80162 6
+};
+\addplot [very thick, red, opacity=0.05073350667953491]
+table {%
+80163 -6
+80163 6
+};
+\addplot [very thick, red, opacity=0.030732043087482452]
+table {%
+80164 -6
+80164 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80165 -6
+80165 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80166 -6
+80166 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80167 -6
+80167 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80168 -6
+80168 6
+};
+\addplot [very thick, red, opacity=0.017974495887756348]
+table {%
+80169 -6
+80169 6
+};
+\addplot [very thick, red, opacity=0.023805228993296623]
+table {%
+80170 -6
+80170 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80171 -6
+80171 6
+};
+\addplot [very thick, red, opacity=0.0014915057690814137]
+table {%
+80172 -6
+80172 6
+};
+\addplot [very thick, red, opacity=0.15428633987903595]
+table {%
+80173 -6
+80173 6
+};
+\addplot [very thick, red, opacity=0.04390780255198479]
+table {%
+80174 -6
+80174 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80175 -6
+80175 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80176 -6
+80176 6
+};
+\addplot [very thick, red, opacity=0.060190942138433456]
+table {%
+80177 -6
+80177 6
+};
+\addplot [very thick, red, opacity=0.002507362514734268]
+table {%
+80178 -6
+80178 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80179 -6
+80179 6
+};
+\addplot [very thick, red, opacity=0.04548570141196251]
+table {%
+80180 -6
+80180 6
+};
+\addplot [very thick, red, opacity=0.22746790945529938]
+table {%
+80181 -6
+80181 6
+};
+\addplot [very thick, red, opacity=0.29503899812698364]
+table {%
+80182 -6
+80182 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80183 -6
+80183 6
+};
+\addplot [very thick, red, opacity=0.1943865865468979]
+table {%
+80184 -6
+80184 6
+};
+\addplot [very thick, red, opacity=0.08635922521352768]
+table {%
+80185 -6
+80185 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80186 -6
+80186 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80187 -6
+80187 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80188 -6
+80188 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80189 -6
+80189 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80190 -6
+80190 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80191 -6
+80191 6
+};
+\addplot [very thick, red, opacity=0.2590031623840332]
+table {%
+80192 -6
+80192 6
+};
+\addplot [very thick, red, opacity=1.0]
+table {%
+80193 -6
+80193 6
+};
+\addplot [very thick, red, opacity=0.06572309136390686]
+table {%
+80194 -6
+80194 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80195 -6
+80195 6
+};
+\addplot [very thick, red, opacity=0.039214447140693665]
+table {%
+80196 -6
+80196 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80197 -6
+80197 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80198 -6
+80198 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80199 -6
+80199 6
+};
+\addplot [very thick, red, opacity=0.3669450581073761]
+table {%
+80200 -6
+80200 6
+};
+\addplot [very thick, red, opacity=0.5605735778808594]
+table {%
+80201 -6
+80201 6
+};
+\addplot [very thick, red, opacity=0.819907546043396]
+table {%
+80202 -6
+80202 6
+};
+\addplot [very thick, red, opacity=0.47009676694869995]
+table {%
+80203 -6
+80203 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80204 -6
+80204 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80205 -6
+80205 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80206 -6
+80206 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80207 -6
+80207 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80208 -6
+80208 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80209 -6
+80209 6
+};
+\addplot [very thick, red, opacity=0.10324903577566147]
+table {%
+80210 -6
+80210 6
+};
+\addplot [very thick, red, opacity=0.22316239774227142]
+table {%
+80211 -6
+80211 6
+};
+\addplot [very thick, red, opacity=0.4002803564071655]
+table {%
+80212 -6
+80212 6
+};
+\addplot [very thick, red, opacity=0.4566594660282135]
+table {%
+80213 -6
+80213 6
+};
+\addplot [very thick, red, opacity=0.369798481464386]
+table {%
+80214 -6
+80214 6
+};
+\addplot [very thick, red, opacity=0.37034010887145996]
+table {%
+80215 -6
+80215 6
+};
+\addplot [very thick, red, opacity=0.028856031596660614]
+table {%
+80216 -6
+80216 6
+};
+\addplot [very thick, red, opacity=0.00033181492472067475]
+table {%
+80217 -6
+80217 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80218 -6
+80218 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80219 -6
+80219 6
+};
+\addplot [very thick, red, opacity=0.12225457280874252]
+table {%
+80220 -6
+80220 6
+};
+\addplot [very thick, red, opacity=0.24062800407409668]
+table {%
+80221 -6
+80221 6
+};
+\addplot [very thick, red, opacity=0.28284206986427307]
+table {%
+80222 -6
+80222 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80223 -6
+80223 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80224 -6
+80224 6
+};
+\addplot [very thick, red, opacity=0.06104350462555885]
+table {%
+80225 -6
+80225 6
+};
+\addplot [very thick, red, opacity=0.21906574070453644]
+table {%
+80226 -6
+80226 6
+};
+\addplot [very thick, red, opacity=0.010131035931408405]
+table {%
+80227 -6
+80227 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80228 -6
+80228 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80229 -6
+80229 6
+};
+\addplot [very thick, red, opacity=0.07662883400917053]
+table {%
+80230 -6
+80230 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80231 -6
+80231 6
+};
+\addplot [very thick, blue, opacity=0.1702125072479248]
+table {%
+80136 -6
+80136 6
+};
+\addplot [very thick, blue, opacity=0.16698551177978516]
+table {%
+80137 -6
+80137 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80138 -6
+80138 6
+};
+\addplot [very thick, blue, opacity=0.0032350767869502306]
+table {%
+80139 -6
+80139 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80140 -6
+80140 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80141 -6
+80141 6
+};
+\addplot [very thick, blue, opacity=0.05429944768548012]
+table {%
+80142 -6
+80142 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80143 -6
+80143 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80144 -6
+80144 6
+};
+\addplot [very thick, blue, opacity=0.15284135937690735]
+table {%
+80145 -6
+80145 6
+};
+\addplot [very thick, blue, opacity=0.2587040960788727]
+table {%
+80146 -6
+80146 6
+};
+\addplot [very thick, blue, opacity=0.2112322449684143]
+table {%
+80147 -6
+80147 6
+};
+\addplot [very thick, blue, opacity=0.08153533190488815]
+table {%
+80148 -6
+80148 6
+};
+\addplot [very thick, blue, opacity=0.010918562300503254]
+table {%
+80149 -6
+80149 6
+};
+\addplot [very thick, blue, opacity=0.0314369723200798]
+table {%
+80150 -6
+80150 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80151 -6
+80151 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80152 -6
+80152 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80153 -6
+80153 6
+};
+\addplot [very thick, blue, opacity=0.03433643653988838]
+table {%
+80154 -6
+80154 6
+};
+\addplot [very thick, blue, opacity=0.0617949515581131]
+table {%
+80155 -6
+80155 6
+};
+\addplot [very thick, blue, opacity=0.4549163579940796]
+table {%
+80156 -6
+80156 6
+};
+\addplot [very thick, blue, opacity=0.0399649478495121]
+table {%
+80157 -6
+80157 6
+};
+\addplot [very thick, blue, opacity=0.06812602281570435]
+table {%
+80158 -6
+80158 6
+};
+\addplot [very thick, blue, opacity=0.01097789965569973]
+table {%
+80159 -6
+80159 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80160 -6
+80160 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80161 -6
+80161 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80162 -6
+80162 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80163 -6
+80163 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80164 -6
+80164 6
+};
+\addplot [very thick, blue, opacity=0.17737287282943726]
+table {%
+80165 -6
+80165 6
+};
+\addplot [very thick, blue, opacity=0.1370125114917755]
+table {%
+80166 -6
+80166 6
+};
+\addplot [very thick, blue, opacity=0.2979004979133606]
+table {%
+80167 -6
+80167 6
+};
+\addplot [very thick, blue, opacity=0.057825516909360886]
+table {%
+80168 -6
+80168 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80169 -6
+80169 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80170 -6
+80170 6
+};
+\addplot [very thick, blue, opacity=0.21878328919410706]
+table {%
+80171 -6
+80171 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80172 -6
+80172 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80173 -6
+80173 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80174 -6
+80174 6
+};
+\addplot [very thick, blue, opacity=0.2104836404323578]
+table {%
+80175 -6
+80175 6
+};
+\addplot [very thick, blue, opacity=0.1679377555847168]
+table {%
+80176 -6
+80176 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80177 -6
+80177 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80178 -6
+80178 6
+};
+\addplot [very thick, blue, opacity=0.01181052252650261]
+table {%
+80179 -6
+80179 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80180 -6
+80180 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80181 -6
+80181 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80182 -6
+80182 6
+};
+\addplot [very thick, blue, opacity=0.004744620993733406]
+table {%
+80183 -6
+80183 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80184 -6
+80184 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80185 -6
+80185 6
+};
+\addplot [very thick, blue, opacity=0.051997631788253784]
+table {%
+80186 -6
+80186 6
+};
+\addplot [very thick, blue, opacity=0.10800694674253464]
+table {%
+80187 -6
+80187 6
+};
+\addplot [very thick, blue, opacity=0.02809176594018936]
+table {%
+80188 -6
+80188 6
+};
+\addplot [very thick, blue, opacity=0.020619520917534828]
+table {%
+80189 -6
+80189 6
+};
+\addplot [very thick, blue, opacity=0.023668989539146423]
+table {%
+80190 -6
+80190 6
+};
+\addplot [very thick, blue, opacity=0.37193891406059265]
+table {%
+80191 -6
+80191 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80192 -6
+80192 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80193 -6
+80193 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80194 -6
+80194 6
+};
+\addplot [very thick, blue, opacity=0.0644247904419899]
+table {%
+80195 -6
+80195 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80196 -6
+80196 6
+};
+\addplot [very thick, blue, opacity=0.35389652848243713]
+table {%
+80197 -6
+80197 6
+};
+\addplot [very thick, blue, opacity=0.15743739902973175]
+table {%
+80198 -6
+80198 6
+};
+\addplot [very thick, blue, opacity=0.043922990560531616]
+table {%
+80199 -6
+80199 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80200 -6
+80200 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80201 -6
+80201 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80202 -6
+80202 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80203 -6
+80203 6
+};
+\addplot [very thick, blue, opacity=0.6589450240135193]
+table {%
+80204 -6
+80204 6
+};
+\addplot [very thick, blue, opacity=0.6139686703681946]
+table {%
+80205 -6
+80205 6
+};
+\addplot [very thick, blue, opacity=0.7669059634208679]
+table {%
+80206 -6
+80206 6
+};
+\addplot [very thick, blue, opacity=0.6039217114448547]
+table {%
+80207 -6
+80207 6
+};
+\addplot [very thick, blue, opacity=0.2944769561290741]
+table {%
+80208 -6
+80208 6
+};
+\addplot [very thick, blue, opacity=0.011301170103251934]
+table {%
+80209 -6
+80209 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80210 -6
+80210 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80211 -6
+80211 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80212 -6
+80212 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80213 -6
+80213 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80214 -6
+80214 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80215 -6
+80215 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80216 -6
+80216 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80217 -6
+80217 6
+};
+\addplot [very thick, blue, opacity=0.15912306308746338]
+table {%
+80218 -6
+80218 6
+};
+\addplot [very thick, blue, opacity=0.02621765248477459]
+table {%
+80219 -6
+80219 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80220 -6
+80220 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80221 -6
+80221 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80222 -6
+80222 6
+};
+\addplot [very thick, blue, opacity=0.0077124424278736115]
+table {%
+80223 -6
+80223 6
+};
+\addplot [very thick, blue, opacity=0.2910187840461731]
+table {%
+80224 -6
+80224 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80225 -6
+80225 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80226 -6
+80226 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80227 -6
+80227 6
+};
+\addplot [very thick, blue, opacity=0.013678465038537979]
+table {%
+80228 -6
+80228 6
+};
+\addplot [very thick, blue, opacity=0.02500099688768387]
+table {%
+80229 -6
+80229 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80230 -6
+80230 6
+};
+\addplot [very thick, blue, opacity=0.122808076441288]
+table {%
+80231 -6
+80231 6
+};
+
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+title={sine\_spiky\_b},
+x grid style={darkgray176},
+xmin=80128.85, xmax=80286.15,
+xtick style={color=black},
+y grid style={darkgray176},
+ymin=-6, ymax=6,
+ytick style={color=black}
+]
+\addplot [semithick, steelblue31119180]
+table {%
+80136 -1.68819510936737
+80137 -1.27418076992035
+80138 -0.735438168048859
+80139 -0.124704360961914
+80140 0.498236626386642
+80141 1.07240569591522
+80142 1.54159820079803
+80143 1.85988533496857
+80144 1.99611032009125
+80145 1.93693828582764
+80146 1.68816149234772
+80147 1.2741322517395
+80148 0.735379755496979
+80149 0.12464164942503
+80150 -0.498297452926636
+80151 -1.07245874404907
+80152 -1.54163825511932
+80153 -1.85990846157074
+80154 -1.9961142539978
+80155 -1.93692266941071
+80156 -1.68812775611877
+80157 -1.27408385276794
+80158 -0.735321283340454
+80159 -0.124578937888145
+80160 0.498358309268951
+80161 1.07251179218292
+80162 1.54167830944061
+80163 1.85993158817291
+80164 1.99611818790436
+80165 1.93690693378448
+80166 1.68809401988983
+80167 1.27403545379639
+80168 0.735262870788574
+80169 0.124516233801842
+80170 -0.498419165611267
+80171 -1.07256484031677
+80172 -1.5417183637619
+80173 -1.85995471477509
+80174 -1.99612212181091
+80175 -1.93689131736755
+80176 -1.68806040287018
+80177 -1.27398693561554
+80178 -0.735204458236694
+80179 -0.124453522264957
+80180 0.498480021953583
+80181 1.07261788845062
+80182 1.54175841808319
+80183 1.85997784137726
+80184 1.99612605571747
+80185 1.93687570095062
+80186 1.68802666664124
+80187 1.27393853664398
+80188 0.73514598608017
+80189 0.124390810728073
+80190 -0.498540878295898
+80191 -1.07267093658447
+80192 -1.54179835319519
+80193 -1.86000084877014
+80194 -1.99612998962402
+80195 -1.9368599653244
+80196 -1.68799293041229
+80197 -1.27389013767242
+80198 -0.73508757352829
+80199 -0.124328099191189
+80200 0.498601704835892
+80201 1.07272398471832
+80202 1.54183840751648
+80203 1.86002397537231
+80204 1.99613380432129
+80205 1.93684434890747
+80206 1.68795931339264
+80207 1.27384173870087
+80208 0.73502916097641
+80209 0.124265387654305
+80210 -0.498662561178207
+80211 -1.07277703285217
+80212 -1.54187846183777
+80213 -1.86004710197449
+80214 -1.99613773822784
+80215 -1.93682861328125
+80216 -1.6879255771637
+80217 -1.27379322052002
+80218 -0.734970688819885
+80219 -0.12420267611742
+80220 0.498723417520523
+80221 1.07282996177673
+80222 1.54191839694977
+80223 1.86007010936737
+80224 -3.0038583278656
+80225 1.93681299686432
+80226 1.68789184093475
+80227 1.27374482154846
+80228 0.734912276268005
+80229 0.124139964580536
+80230 -0.498784244060516
+80231 -1.07288300991058
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80136 -6
+80136 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80137 -6
+80137 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80138 -6
+80138 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80139 -6
+80139 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80140 -6
+80140 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80141 -6
+80141 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80142 -6
+80142 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80143 -6
+80143 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80144 -6
+80144 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80145 -6
+80145 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80146 -6
+80146 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80147 -6
+80147 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80148 -6
+80148 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80149 -6
+80149 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80150 -6
+80150 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80151 -6
+80151 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80152 -6
+80152 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80153 -6
+80153 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80154 -6
+80154 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80155 -6
+80155 6
+};
+\addplot [very thick, red, opacity=0.05832015350461006]
+table {%
+80156 -6
+80156 6
+};
+\addplot [very thick, red, opacity=0.03768923878669739]
+table {%
+80157 -6
+80157 6
+};
+\addplot [very thick, red, opacity=0.004601262044161558]
+table {%
+80158 -6
+80158 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80159 -6
+80159 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80160 -6
+80160 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80161 -6
+80161 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80162 -6
+80162 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80163 -6
+80163 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80164 -6
+80164 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80165 -6
+80165 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80166 -6
+80166 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80167 -6
+80167 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80168 -6
+80168 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80169 -6
+80169 6
+};
+\addplot [very thick, red, opacity=0.013777676969766617]
+table {%
+80170 -6
+80170 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80171 -6
+80171 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80172 -6
+80172 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80173 -6
+80173 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80174 -6
+80174 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80175 -6
+80175 6
+};
+\addplot [very thick, red, opacity=0.14689147472381592]
+table {%
+80176 -6
+80176 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80177 -6
+80177 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80178 -6
+80178 6
+};
+\addplot [very thick, red, opacity=0.0008625289192423224]
+table {%
+80179 -6
+80179 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80180 -6
+80180 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80181 -6
+80181 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80182 -6
+80182 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80183 -6
+80183 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80184 -6
+80184 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80185 -6
+80185 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80186 -6
+80186 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80187 -6
+80187 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80188 -6
+80188 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80189 -6
+80189 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80190 -6
+80190 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80191 -6
+80191 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80192 -6
+80192 6
+};
+\addplot [very thick, red, opacity=0.29051750898361206]
+table {%
+80193 -6
+80193 6
+};
+\addplot [very thick, red, opacity=0.09793287515640259]
+table {%
+80194 -6
+80194 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80195 -6
+80195 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80196 -6
+80196 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80197 -6
+80197 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80198 -6
+80198 6
+};
+\addplot [very thick, red, opacity=0.0005525501910597086]
+table {%
+80199 -6
+80199 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80200 -6
+80200 6
+};
+\addplot [very thick, red, opacity=0.26108992099761963]
+table {%
+80201 -6
+80201 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80202 -6
+80202 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80203 -6
+80203 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80204 -6
+80204 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80205 -6
+80205 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80206 -6
+80206 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80207 -6
+80207 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80208 -6
+80208 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80209 -6
+80209 6
+};
+\addplot [very thick, red, opacity=0.12066053599119186]
+table {%
+80210 -6
+80210 6
+};
+\addplot [very thick, red, opacity=0.32378774881362915]
+table {%
+80211 -6
+80211 6
+};
+\addplot [very thick, red, opacity=0.5710781812667847]
+table {%
+80212 -6
+80212 6
+};
+\addplot [very thick, red, opacity=0.5913786888122559]
+table {%
+80213 -6
+80213 6
+};
+\addplot [very thick, red, opacity=0.22609318792819977]
+table {%
+80214 -6
+80214 6
+};
+\addplot [very thick, red, opacity=0.13978475332260132]
+table {%
+80215 -6
+80215 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80216 -6
+80216 6
+};
+\addplot [very thick, red, opacity=0.13089030981063843]
+table {%
+80217 -6
+80217 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80218 -6
+80218 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80219 -6
+80219 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80220 -6
+80220 6
+};
+\addplot [very thick, red, opacity=0.073935866355896]
+table {%
+80221 -6
+80221 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80222 -6
+80222 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80223 -6
+80223 6
+};
+\addplot [very thick, red, opacity=0.6611984372138977]
+table {%
+80224 -6
+80224 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80225 -6
+80225 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80226 -6
+80226 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80227 -6
+80227 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80228 -6
+80228 6
+};
+\addplot [very thick, red, opacity=0.0]
+table {%
+80229 -6
+80229 6
+};
+\addplot [very thick, red, opacity=0.06396385282278061]
+table {%
+80230 -6
+80230 6
+};
+\addplot [very thick, red, opacity=0.11477236449718475]
+table {%
+80231 -6
+80231 6
+};
+\addplot [very thick, blue, opacity=0.09540272504091263]
+table {%
+80136 -6
+80136 6
+};
+\addplot [very thick, blue, opacity=0.007158468011766672]
+table {%
+80137 -6
+80137 6
+};
+\addplot [very thick, blue, opacity=0.026626842096447945]
+table {%
+80138 -6
+80138 6
+};
+\addplot [very thick, blue, opacity=0.01403449010103941]
+table {%
+80139 -6
+80139 6
+};
+\addplot [very thick, blue, opacity=0.20621846616268158]
+table {%
+80140 -6
+80140 6
+};
+\addplot [very thick, blue, opacity=0.3562486469745636]
+table {%
+80141 -6
+80141 6
+};
+\addplot [very thick, blue, opacity=0.22589001059532166]
+table {%
+80142 -6
+80142 6
+};
+\addplot [very thick, blue, opacity=0.18590369820594788]
+table {%
+80143 -6
+80143 6
+};
+\addplot [very thick, blue, opacity=0.3703439235687256]
+table {%
+80144 -6
+80144 6
+};
+\addplot [very thick, blue, opacity=0.32074397802352905]
+table {%
+80145 -6
+80145 6
+};
+\addplot [very thick, blue, opacity=0.3981821835041046]
+table {%
+80146 -6
+80146 6
+};
+\addplot [very thick, blue, opacity=0.5463824272155762]
+table {%
+80147 -6
+80147 6
+};
+\addplot [very thick, blue, opacity=0.49727141857147217]
+table {%
+80148 -6
+80148 6
+};
+\addplot [very thick, blue, opacity=0.32799026370048523]
+table {%
+80149 -6
+80149 6
+};
+\addplot [very thick, blue, opacity=0.07953399419784546]
+table {%
+80150 -6
+80150 6
+};
+\addplot [very thick, blue, opacity=0.02854890003800392]
+table {%
+80151 -6
+80151 6
+};
+\addplot [very thick, blue, opacity=0.040677472949028015]
+table {%
+80152 -6
+80152 6
+};
+\addplot [very thick, blue, opacity=0.0723845511674881]
+table {%
+80153 -6
+80153 6
+};
+\addplot [very thick, blue, opacity=0.2542780041694641]
+table {%
+80154 -6
+80154 6
+};
+\addplot [very thick, blue, opacity=0.07344977557659149]
+table {%
+80155 -6
+80155 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80156 -6
+80156 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80157 -6
+80157 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80158 -6
+80158 6
+};
+\addplot [very thick, blue, opacity=0.022710097953677177]
+table {%
+80159 -6
+80159 6
+};
+\addplot [very thick, blue, opacity=0.25847527384757996]
+table {%
+80160 -6
+80160 6
+};
+\addplot [very thick, blue, opacity=0.0987873300909996]
+table {%
+80161 -6
+80161 6
+};
+\addplot [very thick, blue, opacity=0.17127442359924316]
+table {%
+80162 -6
+80162 6
+};
+\addplot [very thick, blue, opacity=0.01054022740572691]
+table {%
+80163 -6
+80163 6
+};
+\addplot [very thick, blue, opacity=0.10861503332853317]
+table {%
+80164 -6
+80164 6
+};
+\addplot [very thick, blue, opacity=0.3938823640346527]
+table {%
+80165 -6
+80165 6
+};
+\addplot [very thick, blue, opacity=0.5507557988166809]
+table {%
+80166 -6
+80166 6
+};
+\addplot [very thick, blue, opacity=0.4926905632019043]
+table {%
+80167 -6
+80167 6
+};
+\addplot [very thick, blue, opacity=0.3427543640136719]
+table {%
+80168 -6
+80168 6
+};
+\addplot [very thick, blue, opacity=0.3503035306930542]
+table {%
+80169 -6
+80169 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80170 -6
+80170 6
+};
+\addplot [very thick, blue, opacity=0.18279394507408142]
+table {%
+80171 -6
+80171 6
+};
+\addplot [very thick, blue, opacity=0.14846700429916382]
+table {%
+80172 -6
+80172 6
+};
+\addplot [very thick, blue, opacity=0.103004090487957]
+table {%
+80173 -6
+80173 6
+};
+\addplot [very thick, blue, opacity=0.040639497339725494]
+table {%
+80174 -6
+80174 6
+};
+\addplot [very thick, blue, opacity=0.08915045857429504]
+table {%
+80175 -6
+80175 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80176 -6
+80176 6
+};
+\addplot [very thick, blue, opacity=0.08265656977891922]
+table {%
+80177 -6
+80177 6
+};
+\addplot [very thick, blue, opacity=0.049287572503089905]
+table {%
+80178 -6
+80178 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80179 -6
+80179 6
+};
+\addplot [very thick, blue, opacity=0.2507699728012085]
+table {%
+80180 -6
+80180 6
+};
+\addplot [very thick, blue, opacity=0.2890786826610565]
+table {%
+80181 -6
+80181 6
+};
+\addplot [very thick, blue, opacity=0.12133223563432693]
+table {%
+80182 -6
+80182 6
+};
+\addplot [very thick, blue, opacity=0.2432355284690857]
+table {%
+80183 -6
+80183 6
+};
+\addplot [very thick, blue, opacity=0.21762359142303467]
+table {%
+80184 -6
+80184 6
+};
+\addplot [very thick, blue, opacity=0.2622387111186981]
+table {%
+80185 -6
+80185 6
+};
+\addplot [very thick, blue, opacity=0.5046511292457581]
+table {%
+80186 -6
+80186 6
+};
+\addplot [very thick, blue, opacity=0.4575813412666321]
+table {%
+80187 -6
+80187 6
+};
+\addplot [very thick, blue, opacity=0.3381142020225525]
+table {%
+80188 -6
+80188 6
+};
+\addplot [very thick, blue, opacity=0.32947513461112976]
+table {%
+80189 -6
+80189 6
+};
+\addplot [very thick, blue, opacity=0.028255537152290344]
+table {%
+80190 -6
+80190 6
+};
+\addplot [very thick, blue, opacity=0.03697149455547333]
+table {%
+80191 -6
+80191 6
+};
+\addplot [very thick, blue, opacity=0.05358075350522995]
+table {%
+80192 -6
+80192 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80193 -6
+80193 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80194 -6
+80194 6
+};
+\addplot [very thick, blue, opacity=0.009458387270569801]
+table {%
+80195 -6
+80195 6
+};
+\addplot [very thick, blue, opacity=0.3538894057273865]
+table {%
+80196 -6
+80196 6
+};
+\addplot [very thick, blue, opacity=0.12096291780471802]
+table {%
+80197 -6
+80197 6
+};
+\addplot [very thick, blue, opacity=0.03252308443188667]
+table {%
+80198 -6
+80198 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80199 -6
+80199 6
+};
+\addplot [very thick, blue, opacity=0.24964730441570282]
+table {%
+80200 -6
+80200 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80201 -6
+80201 6
+};
+\addplot [very thick, blue, opacity=0.050710245966911316]
+table {%
+80202 -6
+80202 6
+};
+\addplot [very thick, blue, opacity=0.2309536337852478]
+table {%
+80203 -6
+80203 6
+};
+\addplot [very thick, blue, opacity=0.2920830547809601]
+table {%
+80204 -6
+80204 6
+};
+\addplot [very thick, blue, opacity=0.8150247931480408]
+table {%
+80205 -6
+80205 6
+};
+\addplot [very thick, blue, opacity=0.3935837745666504]
+table {%
+80206 -6
+80206 6
+};
+\addplot [very thick, blue, opacity=0.6975452303886414]
+table {%
+80207 -6
+80207 6
+};
+\addplot [very thick, blue, opacity=0.5780524611473083]
+table {%
+80208 -6
+80208 6
+};
+\addplot [very thick, blue, opacity=0.3698487877845764]
+table {%
+80209 -6
+80209 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80210 -6
+80210 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80211 -6
+80211 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80212 -6
+80212 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80213 -6
+80213 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80214 -6
+80214 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80215 -6
+80215 6
+};
+\addplot [very thick, blue, opacity=0.059309426695108414]
+table {%
+80216 -6
+80216 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80217 -6
+80217 6
+};
+\addplot [very thick, blue, opacity=0.050668470561504364]
+table {%
+80218 -6
+80218 6
+};
+\addplot [very thick, blue, opacity=0.02304808236658573]
+table {%
+80219 -6
+80219 6
+};
+\addplot [very thick, blue, opacity=0.11861885339021683]
+table {%
+80220 -6
+80220 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80221 -6
+80221 6
+};
+\addplot [very thick, blue, opacity=0.10763050615787506]
+table {%
+80222 -6
+80222 6
+};
+\addplot [very thick, blue, opacity=0.5029915571212769]
+table {%
+80223 -6
+80223 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80224 -6
+80224 6
+};
+\addplot [very thick, blue, opacity=0.10737702250480652]
+table {%
+80225 -6
+80225 6
+};
+\addplot [very thick, blue, opacity=0.15468983352184296]
+table {%
+80226 -6
+80226 6
+};
+\addplot [very thick, blue, opacity=0.23462069034576416]
+table {%
+80227 -6
+80227 6
+};
+\addplot [very thick, blue, opacity=0.2897613048553467]
+table {%
+80228 -6
+80228 6
+};
+\addplot [very thick, blue, opacity=0.3621752858161926]
+table {%
+80229 -6
+80229 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80230 -6
+80230 6
+};
+\addplot [very thick, blue, opacity=0.0]
+table {%
+80231 -6
+80231 6
+};
+\end{groupplot}
+
+\draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+  scale=0.6,
+  anchor=north,
+  text=black,
+  rotate=0.0
+]{FA Attributions for -loc, predictions with MLP};
+\end{tikzpicture}
