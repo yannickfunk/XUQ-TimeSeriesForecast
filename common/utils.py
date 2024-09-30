@@ -4,6 +4,7 @@ from typing import List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tikzplotlib
 from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
@@ -24,9 +25,23 @@ def plot_attributions(
     # create results/{method} if it does not exist
     os.makedirs(f"results/{method}", exist_ok=True)
     os.makedirs(f"results_tikz/{method}", exist_ok=True)
+    os.makedirs(f"results_csv/{method}", exist_ok=True)
 
     for idx, attributions in enumerate(attribution_list):
         target_idx = idx
+
+        df = pd.DataFrame(columns=["ds", "y", "pos_attr", "neg_attr"])
+        df["ds"] = test_input_ds
+        df["y"] = test_input_y
+        df["pos_attr"] = attributions
+        df["neg_attr"] = negative_attribution_list[idx]
+        df.to_csv(
+            f"results_csv/{method}/{output_name[1:]}_attributions_{target_idx}.csv"
+        )
+
+        predictions_df = predictions[["ds", f"{model}-loc", f"{model}-scale"]]
+        predictions_df.to_csv(f"results_csv/predictions.csv")
+
         for i, attr in enumerate(attributions):
             if not isinstance(test_input_ds[i], np.datetime64):
                 x_value = float(test_input_ds[i])
@@ -90,6 +105,7 @@ def plot_attributions_exogenous(
     # create results/{method} if it does not exist
     os.makedirs(f"results/{method}", exist_ok=True)
     os.makedirs(f"results_tikz/{method}", exist_ok=True)
+    os.makedirs(f"results_csv/{method}", exist_ok=True)
 
     for target_idx in range(len(attributed_time_series_list[0].positive_attributions)):
         # plot time series list with train / test split borders as vertical lines

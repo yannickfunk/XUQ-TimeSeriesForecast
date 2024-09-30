@@ -22,7 +22,7 @@ ATTR_METHODS = METHOD_TO_CONSTRUCTOR.keys()
 
 def run(model, adapter):
     time_series = SimpleTimeSeries(
-        size=1000,
+        size=100000,
         base_amplitude=2.0,
         base_frequency=0.05,
         base_noise_scale=0,
