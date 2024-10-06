@@ -15,6 +15,8 @@ from common.timeseries import AttributedTimeSeries, TimeSeries
 def plot_attributions(
     attribution_list,
     negative_attribution_list,
+    raw_attribution_list,
+    raw_negative_attribution_list,
     output_name,
     test_input_ds,
     test_input_y,
@@ -30,11 +32,15 @@ def plot_attributions(
     for idx, attributions in enumerate(attribution_list):
         target_idx = idx
 
-        df = pd.DataFrame(columns=["ds", "y", "pos_attr", "neg_attr"])
+        df = pd.DataFrame(
+            columns=["ds", "y", "pos_attr", "neg_attr", "raw_pos_attr", "raw_neg_attr"]
+        )
         df["ds"] = test_input_ds
         df["y"] = test_input_y
         df["pos_attr"] = attributions
         df["neg_attr"] = negative_attribution_list[idx]
+        df["raw_pos_attr"] = raw_attribution_list[idx]
+        df["raw_neg_attr"] = raw_negative_attribution_list[idx]
         df.to_csv(
             f"results_csv/{method}/{output_name[1:]}_attributions_{target_idx}.csv"
         )

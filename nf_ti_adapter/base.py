@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 import tikzplotlib
 import torch
-from captum.attr import (FeatureAblation, InputXGradient, IntegratedGradients,
-                         Lime)
+from captum.attr import FeatureAblation, InputXGradient, IntegratedGradients, Lime
 from matplotlib import pyplot as plt
 from neuralforecast import NeuralForecast
 from neuralforecast.common._base_model import BaseModel  # noqa
@@ -425,7 +424,7 @@ class NfTiAdapter:
         output_name: str,
         ds: Union[List[str], np.ndarray],
         y: np.ndarray,
-    ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+    ) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
         if not hasattr(self.nf, "ds"):
             raise ValueError("Model has to be trained before calling explain")
         if output_name not in self.output_names:
@@ -439,6 +438,8 @@ class NfTiAdapter:
 
         attributions = []
         negative_attributions = []
+        raw_attributions = []
+        raw_negative_attributions = []
         for target_idx in target_indices:
             forward_callable = lambda x: self._forward_function(x, output_name)[
                 target_idx : target_idx + 1
@@ -447,6 +448,12 @@ class NfTiAdapter:
             explanation_method = METHOD_TO_CONSTRUCTOR[method](forward_callable)
 
             attr = self._attribute(explanation_method, y)[:, 0]
+
+            # raw attributions
+            raw_positive_attr = np.abs(attr.clip(min=0))
+            raw_attributions.append(raw_positive_attr)
+            raw_negative_attr = np.abs(attr.clip(max=0))
+            raw_negative_attributions.append(raw_negative_attr)
 
             max_attr = np.max(np.abs(attr))
             if max_attr < 1e-6:
@@ -457,7 +464,12 @@ class NfTiAdapter:
             positive_attr = np.abs(attr.clip(min=0)) / max_attr
             attributions.append(positive_attr)
 
-        return attributions, negative_attributions
+        return (
+            attributions,
+            negative_attributions,
+            raw_attributions,
+            raw_negative_attributions,
+        )
 
     def explain_list(
         self,

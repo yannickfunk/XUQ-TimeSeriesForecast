@@ -25,6 +25,7 @@ model_to_display = {
 }
 
 for exp_model in ["mlp", "nbeats", "nhits", "patch_tst"]:
+    # for exp_model in ["mlp", "nbeats"]:
     exp_path = exp_root / EXP_NAME / exp_model
     csv_results_path = exp_path / "results_csv"
     predictions_path = csv_results_path / "predictions.csv"
@@ -44,6 +45,10 @@ for exp_model in ["mlp", "nbeats", "nhits", "patch_tst"]:
 
                 pos_attr = df["pos_attr"]
                 neg_attr = df["neg_attr"]
+                # raw_pos_attr = df["raw_pos_attr"]
+                # raw_neg_attr = df["raw_neg_attr"]
+                # raw_attr = raw_pos_attr + raw_neg_attr
+
                 input_x = np.arange(len(df["ds"]))
                 prediction_x = np.arange(
                     len(df["ds"]), len(df["ds"]) + len(predictions_df)
@@ -89,6 +94,10 @@ for exp_model in ["mlp", "nbeats", "nhits", "patch_tst"]:
                     label="Explained Point",
                     linestyle="None",
                 )
+
+                # # plot the raw attributions
+                # ax.plot(input_x, raw_attr * 1000, color="purple")
+
                 ax.tick_params(axis="x", labelsize=16)
                 ax.tick_params(axis="y", labelsize=16)
 

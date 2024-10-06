@@ -81,13 +81,20 @@ def run(model, adapter):
 
     for attr_method in ATTR_METHODS:
         target_indices = list(range(len(predictions[f"{model}-loc"])))
-        attribution_list, negative_attribution_list = adapter.explain(
+        (
+            attribution_list,
+            negative_attribution_list,
+            raw_attribution_list,
+            raw_negative_attribution_list,
+        ) = adapter.explain(
             attr_method, target_indices, "-loc", test_input_ds, test_input_y
         )
 
         plot_attributions(
             attribution_list,
             negative_attribution_list,
+            raw_attribution_list,
+            raw_negative_attribution_list,
             "-loc",
             test_input_ds,
             test_input_y,
@@ -97,13 +104,20 @@ def run(model, adapter):
         )
 
         target_indices = list(range(len(predictions[f"{model}-scale"])))
-        attribution_list, negative_attribution_list = adapter.explain(
+        (
+            attribution_list,
+            negative_attribution_list,
+            raw_attribution_list,
+            raw_negative_attribution_list,
+        ) = adapter.explain(
             attr_method, target_indices, "-scale", test_input_ds, test_input_y
         )
 
         plot_attributions(
             attribution_list,
             negative_attribution_list,
+            raw_attribution_list,
+            raw_negative_attribution_list,
             "-scale",
             test_input_ds,
             test_input_y,
