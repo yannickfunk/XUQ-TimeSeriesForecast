@@ -4,6 +4,8 @@ import random
 import numpy as np
 import tikzplotlib
 from matplotlib import pyplot as plt
+
+plt.style.use("ggplot")
 from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
 
@@ -54,7 +56,14 @@ def run(model, adapter):
     plt.show()
 
     # save sample
-    plt.plot(time_series[:100])
+    plt.plot(time_series[:100], color="black")
+    plt.xlabel("Time Step t", fontsize=18, labelpad=8)
+    plt.ylabel("Value T(t)", fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.xticks(fontsize=18)
+    plt.tight_layout()
+    plt.savefig("results_pdf/sample.pdf", layout="tight")
+    plt.show()
     tikzplotlib.save("results_tikz/sample.tex")
     plt.close()
 
