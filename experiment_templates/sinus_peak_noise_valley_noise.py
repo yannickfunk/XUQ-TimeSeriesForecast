@@ -3,6 +3,9 @@ import random
 
 import numpy as np
 from matplotlib import pyplot as plt
+
+plt.style.use("ggplot")
+
 from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
 
@@ -22,7 +25,7 @@ ATTR_METHODS = METHOD_TO_CONSTRUCTOR.keys()
 
 def run(model, adapter):
     time_series = SimpleTimeSeries(
-        size=64000,
+        size=100000,
         base_amplitude=2.0,
         base_frequency=0.05,
         base_noise_scale=0,
@@ -52,7 +55,7 @@ def run(model, adapter):
         valley_idx = min(i + 2, len(valleys) - 1)
         marked_valley = valley_idx
         valley = valleys[valley_idx]
-        sub_arr = train_y[valley - 3 : valley + 3]
+        sub_arr = train_y[valley - 3 : valley + 4]
         sub_arr += np.random.normal(0, 2, len(sub_arr))
 
     # plot time series with train / test split borders as vertical lines
@@ -62,27 +65,46 @@ def run(model, adapter):
     plt.title("Time Series")
     plt.show()
 
-    adapter.fit(train_ds, train_y, val_size=int(VAL_SPLIT * len(train_y)))
+    # save sample
+    plt.plot(time_series[:100], color="black")
+    plt.xlabel("Time Step t", fontsize=18, labelpad=8)
+    plt.ylabel("Value T(t)", fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.xticks(fontsize=18)
+    plt.tight_layout()
+    plt.savefig("results_pdf/sample.pdf", layout="tight")
+    plt.show()
+    plt.close()
 
     test_input_ds = test_ds[:INPUT_SIZE]
     test_input_y = test_y[:INPUT_SIZE]
 
+    np.random.seed(42)
     test_peaks, _ = find_peaks(test_input_y)
     peak = test_peaks[-1]
-    sub_arr = test_input_y[peak - 3 : peak + 3]
+    sub_arr = test_input_y[peak - 3 : peak + 4]
     sub_arr += np.random.normal(0, 2, len(sub_arr))
+
+    adapter.fit(train_ds, train_y, val_size=int(VAL_SPLIT * len(train_y)))
 
     predictions = adapter.predict_plot(ds=test_input_ds, y=test_input_y)
 
     for attr_method in ATTR_METHODS:
         target_indices = list(range(len(predictions[f"{model}-loc"])))
-        attribution_list, negative_attribution_list = adapter.explain(
+        (
+            attribution_list,
+            negative_attribution_list,
+            raw_attributions,
+            raw_negative_attributions,
+        ) = adapter.explain(
             attr_method, target_indices, "-loc", test_input_ds, test_input_y
         )
 
         plot_attributions(
             attribution_list,
             negative_attribution_list,
+            raw_attributions,
+            raw_negative_attributions,
             "-loc",
             test_input_ds,
             test_input_y,
@@ -92,13 +114,20 @@ def run(model, adapter):
         )
 
         target_indices = list(range(len(predictions[f"{model}-scale"])))
-        attribution_list, negative_attribution_list = adapter.explain(
+        (
+            attribution_list,
+            negative_attribution_list,
+            raw_attributions,
+            raw_negative_attributions,
+        ) = adapter.explain(
             attr_method, target_indices, "-scale", test_input_ds, test_input_y
         )
 
         plot_attributions(
             attribution_list,
             negative_attribution_list,
+            raw_attributions,
+            raw_negative_attributions,
             "-scale",
             test_input_ds,
             test_input_y,

@@ -14,7 +14,7 @@ model = NBEATS(
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
     max_steps=700,
-    random_seed=40,
+    random_seed=4567,
     # early_stop_patience_steps=5,
     # val_check_steps=10,
     scaler_type="robust",
