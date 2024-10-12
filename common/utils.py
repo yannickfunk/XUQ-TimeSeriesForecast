@@ -114,6 +114,27 @@ def plot_attributions_exogenous(
     os.makedirs(f"results_csv/{method}", exist_ok=True)
 
     for target_idx in range(len(attributed_time_series_list[0].positive_attributions)):
+        df = pd.DataFrame()
+
+        for ats in attributed_time_series_list:
+
+            if ats.unique_id == target_uid:
+                df["ds"] = ats.ds
+                df["y"] = ats.y
+                df["pos_attr_y"] = ats.positive_attributions[target_idx]
+                df["neg_attr_y"] = ats.negative_attributions[target_idx]
+            else:
+                df[ats.unique_id] = ats.y
+                df[f"pos_attr_{ats.unique_id}"] = ats.positive_attributions[target_idx]
+                df[f"neg_attr_{ats.unique_id}"] = ats.negative_attributions[target_idx]
+
+        df.to_csv(
+            f"results_csv/{method}/{output_name[1:]}_attributions_{target_idx}.csv"
+        )
+
+        predictions_df = predictions[["ds", f"{model}-loc", f"{model}-scale"]]
+        predictions_df.to_csv(f"results_csv/predictions.csv")
+
         # plot time series list with train / test split borders as vertical lines
         fig, axs = plt.subplots(len(attributed_time_series_list), 1, sharex="all")
 

@@ -2,12 +2,9 @@ from lightning.pytorch.loggers import TensorBoardLogger
 from neuralforecast.losses.pytorch import DistributionLoss
 from neuralforecast.models import NBEATSx
 
-from experiment_templates.exogenous_sinus_peak_spike import (
-    HORIZON,
-    INPUT_SIZE,
-    LEVELS,
-    run,
-)
+from experiment_templates.exogenous_sinus_peak_spike import (HORIZON,
+                                                             INPUT_SIZE,
+                                                             LEVELS, run)
 from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 model = NBEATSx(
@@ -15,7 +12,7 @@ model = NBEATSx(
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    max_steps=1700,
+    max_steps=1600,
     random_seed=40,
     # early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),

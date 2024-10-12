@@ -1,9 +1,6 @@
 import os
 
 import numpy as np
-from lightning.pytorch.loggers import TensorBoardLogger
-from neuralforecast.losses.pytorch import DistributionLoss, MQLoss
-from neuralforecast.models import NHITS
 
 from common.timeseries import TimeSeries
 from common.utils import (add_noise, generate_sine_noisy_peaks,
@@ -11,13 +8,12 @@ from common.utils import (add_noise, generate_sine_noisy_peaks,
                           plot_attributions_exogenous, plot_time_series_list,
                           train_test_split)
 from nf_ti_adapter.base import METHOD_TO_CONSTRUCTOR
-from nf_ti_adapter.nhits import NhitsNfTiAdapter
 
 ATTR_METHODS = METHOD_TO_CONSTRUCTOR.keys()
 
 os.environ["NIXTLA_ID_AS_COL"] = "1"
 
-SIZE = 64000
+SIZE = 100000
 HORIZON = 48
 LEVELS = [68]
 INPUT_SIZE = 2 * HORIZON
@@ -62,7 +58,7 @@ def run(model, adapter):
     # plot time series list with train / test split borders as vertical lines
     plot_time_series_list(train_time_series_list, limit=(0, 200))
 
-    start_idx = 1420
+    start_idx = 58
     test_input_list = [
         TimeSeries(
             unique_id=ts.unique_id,

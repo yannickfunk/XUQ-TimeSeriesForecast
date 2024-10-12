@@ -12,7 +12,7 @@ model = NHITS(
     h=HORIZON,
     loss=DistributionLoss(distribution="Normal", level=LEVELS, return_params=True),
     # loss=MQLoss(level=LEVELS),
-    max_steps=1700,
+    max_steps=2500,
     random_seed=40,
     # early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
