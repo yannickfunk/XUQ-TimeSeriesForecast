@@ -1,8 +1,7 @@
 from pathlib import Path
 
-import matplotlib
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import numpy as np
 # plt.rcParams["figure.figsize"] = [16, 6]
 import pandas as pd
 from lightning.pytorch.loggers import TensorBoardLogger
@@ -14,6 +13,8 @@ from common.timeseries import TimeSeries
 from common.utils import plot_attributions
 from nf_ti_adapter.base import METHOD_TO_CONSTRUCTOR
 from nf_ti_adapter.nhits import NhitsNfTiAdapter
+
+plt.style.use("ggplot")
 
 DATA_ROOT = Path("~/data/entsoe").expanduser()
 COUNTRY = "FR"
@@ -49,13 +50,6 @@ def preprocess_df(df):
     # scale prep_df.y with sklearn robust scaler
     scaler = MinMaxScaler()
     prep_df.y = scaler.fit_transform(prep_df.y.values.reshape(-1, 1)).flatten()
-
-    # add day of week and hour of day as features
-    prep_df["dow"] = prep_df.ds.dt.dayofweek
-    prep_df["hour"] = prep_df.ds.dt.hour
-
-    # add month of year as feature
-    prep_df["month"] = prep_df.ds.dt.month
     return prep_df
 
 
@@ -91,57 +85,62 @@ model = NHITS(
     # early_stop_patience_steps=5,
     logger=TensorBoardLogger("logs"),
     scaler_type="robust",
-    hist_exog_list=["dow", "hour", "month"],
+    # hist_exog_list=["dow", "hour", "month"],
 )
 nf_ti_adapter = NhitsNfTiAdapter(model, "h")
 
 loaded_df = load_df()
 df = preprocess_df(loaded_df)
 
-# plot df where year is 2020
-df_2020 = df[(df.ds >= "2020-03-01") & (df.ds < "2020-04-01")]
-plt.plot(df_2020.ds, df_2020.y, label="2020")
-
-df_2019 = df[(df.ds >= "2019-03-01") & (df.ds < "2019-04-01")]
-plt.plot(df_2020.ds, df_2019.y, label="2019")
-
-date_format = matplotlib.dates.DateFormatter("%m/%d")
-plt.gca().xaxis.set_major_formatter(date_format)
-plt.title("Load in March")
-plt.legend()
-plt.show()
-
 # train test split
 last_train_idx = int(len(df) * TRAIN_SPLIT)
 df_train = df[:last_train_idx]
 df_test = df[last_train_idx:]
 
-train_list = get_time_series_list(df_train)
+# save df_test as csv
+df_test.to_csv("results_csv/df_test.csv", index=False)
 
-nf_ti_adapter.fit_list_exogenous(
-    train_list, "y", val_size=int(VAL_SPLIT * len(df_train.y))
-)
-# nf_ti_adapter.fit(df_train.ds, df_train.y, val_size=int(VAL_SPLIT * len(df_train.y)))
+print(df["ds"])
+plt.plot(df["ds"][:96], df["y"][:96], color="black")
+plt.xlabel("Date", fontsize=18, labelpad=8, color="black")
+plt.ylabel("Value", fontsize=18, color="black")
+plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1))
+fig = plt.gcf()
+fig.set_size_inches(12, 6)
+plt.yticks(fontsize=16)
+plt.xticks(fontsize=16)
+plt.tight_layout()
+plt.savefig("results_pdf/sample.pdf", layout="tight")
+plt.show()
+plt.close()
+
+# train_list = get_time_series_list(df_train)
+
+# nf_ti_adapter.fit_list_exogenous(
+#     train_list, "y", val_size=int(VAL_SPLIT * len(df_train.y))
+# )
+exit()
+nf_ti_adapter.fit(df_train.ds, df_train.y, val_size=int(VAL_SPLIT * len(df_train.y)))
 
 start_idx = 126
 test_input = df_test.iloc[start_idx : start_idx + INPUT_SIZE]
-test_input_list = get_time_series_list(test_input)
+# test_input_list = get_time_series_list(test_input)
 
-predictions = nf_ti_adapter.predict_list_exogenous_plot(test_input_list, "y")
-# predictions = nf_ti_adapter.predict_plot(
-#     test_input.ds, test_input.y, test_ds=df_test.ds, test_y=df_test.y
-# )
+predictions = nf_ti_adapter.predict_plot(
+    test_input.ds, test_input.y, test_ds=df_test.ds, test_y=df_test.y
+)
 
-exit()
 for attr_method in ATTR_METHODS:
     target_indices = list(range(len(predictions[f"{model}-loc"])))
-    attribution_list, negative_attribution_list = nf_ti_adapter.explain(
+    attribution_list, negative_attribution_list, r, rn = nf_ti_adapter.explain(
         attr_method, target_indices, "-loc", test_input.ds.values, test_input.y.values
     )
 
     plot_attributions(
         attribution_list,
         negative_attribution_list,
+        r,
+        rn,
         "-loc",
         test_input.ds.values,
         test_input.y.values,
@@ -151,13 +150,15 @@ for attr_method in ATTR_METHODS:
     )
 
     target_indices = list(range(len(predictions[f"{model}-scale"])))
-    attribution_list, negative_attribution_list = nf_ti_adapter.explain(
+    attribution_list, negative_attribution_list, r, rn = nf_ti_adapter.explain(
         attr_method, target_indices, "-scale", test_input.ds.values, test_input.y.values
     )
 
     plot_attributions(
         attribution_list,
         negative_attribution_list,
+        r,
+        rn,
         "-scale",
         test_input.ds.values,
         test_input.y.values,

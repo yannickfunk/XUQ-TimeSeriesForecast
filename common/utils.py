@@ -385,14 +385,32 @@ def train_test_split(
 
 
 def plot_time_series_list(time_series_list: List[TimeSeries], limit=None):
-    fig, axs = plt.subplots(len(time_series_list), 1, sharex="all")
+    fig, axs = plt.subplots(len(time_series_list), 1, sharex="all", figsize=(10, 6))
+
+    time_series_list = time_series_list[::-1]
+    names = ["$T_{target}$", "$T_a$", "$T_b$"]
     for i, time_series in enumerate(time_series_list):
         if limit:
-            axs[i].plot(time_series.y[limit[0] : limit[1]])
+            axs[i].plot(time_series.y[limit[0] : limit[1]], color="black")
+            axs[i].set_xlim(limit[0], limit[1])
         else:
             axs[i].plot(time_series.y)
+
+        # set yticks
+        yticks = [-3, 0, 3]
+        axs[i].set_yticks(yticks)
+        # set font size of yticks to 18
+        axs[i].tick_params(axis="y", labelsize=16)
+        axs[i].tick_params(axis="x", labelsize=16)
         axs[i].set_ylim(-5, 5)
-        axs[i].set_title(time_series.unique_id)
+        axs[i].set_title(names[i], fontsize=16)
         fig.subplots_adjust(hspace=0.6)
+
+    # add super x label
+    fig.text(0.5, 0.02, "Time Step t", ha="center", fontsize=18)
+
+    # add super y label
+    fig.text(0.03, 0.5, "Value", va="center", rotation="vertical", fontsize=18)
+    plt.savefig("results_pdf/sample.pdf", bbox_inches="tight")
     plt.show()
     return fig, axs
