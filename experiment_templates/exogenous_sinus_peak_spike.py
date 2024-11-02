@@ -4,10 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from common.timeseries import TimeSeries
-from common.utils import (add_noise, generate_sine_noisy_peaks,
-                          generate_sine_spiky_peaks,
-                          plot_attributions_exogenous, plot_time_series_list,
-                          train_test_split)
+from common.utils import (
+    add_noise,
+    generate_sine_noisy_peaks,
+    generate_sine_spiky_peaks,
+    plot_attributions_exogenous,
+    plot_time_series_list,
+    train_test_split,
+)
 from nf_ti_adapter.base import METHOD_TO_CONSTRUCTOR
 
 plt.style.use("ggplot")
@@ -60,7 +64,6 @@ def run(model, adapter):
 
     # plot time series list with train / test split borders as vertical lines
     plot_time_series_list(train_time_series_list, limit=(0, 200))
-    exit()
 
     start_idx = 58
     test_input_list = [

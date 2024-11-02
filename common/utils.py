@@ -5,6 +5,7 @@ from typing import List, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 import tikzplotlib
 from scipy.signal import find_peaks
 from synthetictime.simple_time_series import SimpleTimeSeries
@@ -384,16 +385,18 @@ def train_test_split(
     return train, test
 
 
-def plot_time_series_list(time_series_list: List[TimeSeries], limit=None):
+def plot_time_series_list(time_series_list: List[TimeSeries], orig, limit=None):
     fig, axs = plt.subplots(len(time_series_list), 1, sharex="all", figsize=(10, 6))
 
     time_series_list = time_series_list[::-1]
     names = ["$T_{target}$", "$T_a$", "$T_b$"]
     for i, time_series in enumerate(time_series_list):
         if limit:
+            axs[i].plot(orig[limit[0] : limit[1]], color="blue", linestyle="dotted")
             axs[i].plot(time_series.y[limit[0] : limit[1]], color="black")
             axs[i].set_xlim(limit[0], limit[1])
         else:
+            axs[i].plot(orig[limit[0] : limit[1]], color="blue", linestyle="dotted")
             axs[i].plot(time_series.y)
 
         # set yticks
@@ -411,6 +414,6 @@ def plot_time_series_list(time_series_list: List[TimeSeries], limit=None):
 
     # add super y label
     fig.text(0.03, 0.5, "Value", va="center", rotation="vertical", fontsize=18)
-    plt.savefig("results_pdf/sample.pdf", bbox_inches="tight")
+    plt.savefig("results_pdf/sample_baseline.pdf", bbox_inches="tight")
     plt.show()
     return fig, axs

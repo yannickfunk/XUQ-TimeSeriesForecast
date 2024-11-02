@@ -30,6 +30,7 @@ def run(model, adapter):
         base_noise_scale=0,
         base_noise_amplitude=0.5,
     ).synthetic_time_series
+    orig_time_series = time_series.copy()
     time_series_ds = np.arange(len(time_series))
 
     peaks, _ = find_peaks(time_series)
@@ -56,13 +57,14 @@ def run(model, adapter):
     plt.show()
 
     # save sample
+    plt.plot(orig_time_series[:100], color="blue", linestyle="dotted")
     plt.plot(time_series[:100], color="black")
     plt.xlabel("Time Step t", fontsize=18, labelpad=8)
     plt.ylabel("Value T(t)", fontsize=18)
     plt.yticks(fontsize=18)
     plt.xticks(fontsize=18)
     plt.tight_layout()
-    plt.savefig("results_pdf/sample.pdf", layout="tight")
+    plt.savefig("results_pdf/sample_baseline.pdf", layout="tight")
     plt.show()
     tikzplotlib.save("results_tikz/sample.tex")
     plt.close()

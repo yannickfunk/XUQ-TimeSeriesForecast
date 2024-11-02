@@ -35,7 +35,9 @@ for exp_model in ["mlp", "nbeats", "nhits", "patch_tst"]:
             fa_path = csv_results_path / exp_attr
             predictions_df = pd.read_csv(predictions_path)
 
-            fig, axes = plt.subplots(2, 2, sharex="all", sharey="all", figsize=(12, 5))
+            fig, axes = plt.subplots(
+                2, 2, sharex="all", sharey="all", figsize=(12, 2.8)
+            )
             target_indices = [10, 15, 20, 25]
 
             for ax, target_index in zip(axes.flatten(), target_indices):
@@ -110,19 +112,21 @@ for exp_model in ["mlp", "nbeats", "nhits", "patch_tst"]:
             handles.append(mpatches.Patch(color="blue", label="Negative Attribution"))
             labels.append("Negative Attribution")
 
-            fig.text(0.5, 0.0, "Time Step", ha="center", fontsize=16)
-            fig.text(0.07, 0.5, "Value", va="center", rotation="vertical", fontsize=16)
+            fig.text(0.5, -0.07, "Time Step", ha="center", fontsize=16)
+            fig.text(0.05, 0.5, "Value", va="center", rotation="vertical", fontsize=16)
             plt.xlim(0, 144)
+
             fig.savefig(
                 exp_path / "results_pdf" / f"{exp_attr}_{output}.pdf",
                 bbox_inches="tight",
             )
+
             fig.legend(
                 handles,
                 labels,
                 loc="upper center",
                 ncol=3,
-                bbox_to_anchor=(0.5, 1.1),
+                bbox_to_anchor=(0.5, 1.2),
                 facecolor="white",
                 fontsize=16,
             )
@@ -185,9 +189,9 @@ handles, labels = plt.gca().get_legend_handles_labels()
 fig.legend(
     handles,
     labels,
-    loc="lower center",
+    loc="upper center",
     ncol=3,
-    bbox_to_anchor=(0.5, -0.14),
+    bbox_to_anchor=(0.5, 1.07),
     facecolor="white",
     fontsize=16,
 )
@@ -195,5 +199,5 @@ fig.legend(
 fig.text(0.5, 0.0, "Time Step", ha="center", fontsize=16)
 fig.text(0.07, 0.5, "Value", va="center", rotation="vertical", fontsize=16)
 plt.xlim(0, 144)
-plt.savefig(exp_root / EXP_NAME / "all_models.pdf", bbox_inches="tight")
+plt.savefig(exp_root / EXP_NAME / "all_models_top.pdf", bbox_inches="tight")
 plt.show()

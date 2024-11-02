@@ -197,14 +197,14 @@ handles, labels = plt.gca().get_legend_handles_labels()
 fig.legend(
     handles,
     labels,
-    loc="lower center",
+    loc="upper center",
     ncol=3,
-    bbox_to_anchor=(0.5, -0.14),
+    bbox_to_anchor=(0.5, 1.07),
     facecolor="white",
     fontsize=16,
 )
 
 fig.text(0.5, 0.0, "Time Step", ha="center", fontsize=16)
 fig.text(0.03, 0.5, "Value", va="center", rotation="vertical", fontsize=16)
-plt.savefig(exp_root / EXP_NAME / "all_models.pdf", bbox_inches="tight")
+plt.savefig(exp_root / EXP_NAME / "all_models_top.pdf", bbox_inches="tight")
 plt.show()
